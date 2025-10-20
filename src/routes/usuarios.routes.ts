@@ -1,6 +1,6 @@
 // src/routes/usuarioRoutes.ts
 import { Router } from 'express';
-import { Usuario } from '../modelos/usuarios.js';
+import { Usuario } from '../modelos/Usuarios';
 import { AppDataSource } from '../data-source.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
