@@ -4,16 +4,18 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Unique } from
 @Entity('usuarios')
 @Unique(['email'])
 export class Usuario {
-  @PrimaryGeneratedColumn('increment' as any, { name: 'id_usuario' } as any)
-  id!: number;
+    
+  // THIS IS THE MISSING PART: The decorator must be applied to a property.
+  @PrimaryGeneratedColumn('increment', { name: 'id_usuario' })
+  id!: number; // <- You need to declare the property here!
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255 })
   nombre!: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 }) 
   email!: string;
 
-  @Column({ name: 'contraseña' })
+  @Column({ name: 'contraseña', type: 'text' })
   password!: string;
 
   @CreateDateColumn({ name: 'fecha_registro' })
