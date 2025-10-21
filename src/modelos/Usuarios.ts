@@ -1,13 +1,16 @@
-// src/entity/Usuario.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Unique } from 'typeorm';
 
+/**
+ * Define la entidad Usuario, mapeando a la tabla 'usuarios' con campos descriptivos.
+ * - La contraseña se marca con 'select: false' para no ser cargada por defecto.
+ * - Se utiliza @Unique(['email']) para asegurar que el correo electrónico sea único.
+ */
 @Entity('usuarios')
 @Unique(['email'])
 export class Usuario {
     
-  // THIS IS THE MISSING PART: The decorator must be applied to a property.
   @PrimaryGeneratedColumn('increment', { name: 'id_usuario' })
-  id!: number; // <- You need to declare the property here!
+  id!: number; 
 
   @Column({ type: 'varchar', length: 255 })
   nombre!: string;
@@ -15,7 +18,8 @@ export class Usuario {
   @Column({ type: 'varchar', length: 255 }) 
   email!: string;
 
-  @Column({ name: 'contraseña', type: 'text' })
+  // Usamos 'select: false' por seguridad: evita que se devuelva en consultas automáticas
+  @Column({ name: 'contraseña', type: 'text', select: false }) 
   password!: string;
 
   @CreateDateColumn({ name: 'fecha_registro' })
