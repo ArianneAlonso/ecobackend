@@ -1,16 +1,10 @@
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
+import type { JwtPayload } from "../interfaces/JwtPayload";
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 // Define el tipo de la carga útil (payload) del JWT
-export interface JwtPayload {
-    id: number;
-    email: string;
-    iat: number;
-    exp: number;
-}
-
 
 export class ValidateToken {
   /**

@@ -22,7 +22,7 @@ export class UsuariosController {
    * GET /usuarios - Obtiene la lista de todos los usuarios.
    */
   async obtenerUsuarios(req: Request, res: Response) {
-    const tokenHeader = req.headers.token;
+    const tokenHeader = req.cookies.authToken;
     if (!tokenHeader) {
       return res.status(401).json({ message: "No se proporcionó token" });
     }
@@ -48,7 +48,11 @@ export class UsuariosController {
   async obtenerUsuarioPorId(req: Request, res: Response) {
     const idParam = req.params.id;
     // Tomamos el token desde los headers de la peticion de la siguiente manera:
-    const token = req.headers.token;
+    const token = req.cookies.authToken;
+
+     if (!token) {
+      return res.status(401).json({ message: "Token inválido" });
+    }
 
     if (!idParam) {
       return res

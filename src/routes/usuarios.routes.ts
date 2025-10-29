@@ -35,6 +35,4 @@ router.post('/login', loginValidation, controller.iniciarSesion);
 router.get('/', SessionValidator.validateSession,controller.obtenerUsuarios);
 router.get('/:id', SessionValidator.validateSession, controller.obtenerUsuarioPorId);
 
-// Sugerencia: Añadir middleware de autenticación para rutas protegidas
-
 export default router;
