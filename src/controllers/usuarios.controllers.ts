@@ -5,7 +5,6 @@ import type { DeepPartial } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import { validateTokenJWT } from "../middlewares/ValidateToken.js";
 
 dotenv.config();
 
@@ -82,7 +81,6 @@ export class UsuariosController {
    * POST /usuarios/registrar - Crea un nuevo usuario (Registro).
    */
   async crearUsuario(req: Request, res: Response) {
-    // Se elimina 'edad' de la desestructuración
     const { nombre, email, password } = req.body;
 
     if (!nombre || !email || !password) {

@@ -30,7 +30,7 @@ CREATE TYPE public.tipo_transaccion_enum AS ENUM (
 );
 
 
-ALTER TYPE public.tipo_transaccion_enum OWNER TO postgres;
+ALTER TYPE public.tipo_transaccion_enum OWNER TO admin;
 
 SET default_tablespace = '';
 
@@ -49,7 +49,7 @@ CREATE TABLE public.contenedores (
 );
 
 
-ALTER TABLE public.contenedores OWNER TO postgres;
+ALTER TABLE public.contenedores OWNER TO admin;
 
 --
 -- Name: contenedores_id_contenedor_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -64,7 +64,7 @@ CREATE SEQUENCE public.contenedores_id_contenedor_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNER TO postgres;
+ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNER TO admin;
 
 --
 -- Name: contenedores_id_contenedor_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -87,7 +87,7 @@ CREATE TABLE public.eventos_ambientales (
 );
 
 
-ALTER TABLE public.eventos_ambientales OWNER TO postgres;
+ALTER TABLE public.eventos_ambientales OWNER TO admin;
 
 --
 -- Name: eventos_ambientales_id_evento_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -102,7 +102,7 @@ CREATE SEQUENCE public.eventos_ambientales_id_evento_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.eventos_ambientales_id_evento_seq OWNER TO postgres;
+ALTER SEQUENCE public.eventos_ambientales_id_evento_seq OWNER TO admin;
 
 --
 -- Name: eventos_ambientales_id_evento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -125,7 +125,7 @@ CREATE TABLE public.puntos_ecologicos (
 );
 
 
-ALTER TABLE public.puntos_ecologicos OWNER TO postgres;
+ALTER TABLE public.puntos_ecologicos OWNER TO admin;
 
 --
 -- Name: COLUMN puntos_ecologicos.id_referencia; Type: COMMENT; Schema: public; Owner: postgres
@@ -147,7 +147,7 @@ CREATE SEQUENCE public.puntos_ecologicos_id_transaccion_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.puntos_ecologicos_id_transaccion_seq OWNER TO postgres;
+ALTER SEQUENCE public.puntos_ecologicos_id_transaccion_seq OWNER TO admin;
 
 --
 -- Name: puntos_ecologicos_id_transaccion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -169,7 +169,7 @@ CREATE TABLE public.usuarios (
 );
 
 
-ALTER TABLE public.usuarios OWNER TO postgres;
+ALTER TABLE public.usuarios OWNER TO admin;
 
 --
 -- Name: usuarios_id_usuario_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -184,7 +184,7 @@ CREATE SEQUENCE public.usuarios_id_usuario_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.usuarios_id_usuario_seq OWNER TO postgres;
+ALTER SEQUENCE public.usuarios_id_usuario_seq OWNER TO admin;
 
 --
 -- Name: usuarios_id_usuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
