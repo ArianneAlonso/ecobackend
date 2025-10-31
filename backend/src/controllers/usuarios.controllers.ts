@@ -187,8 +187,9 @@ export class UsuariosController {
       // 4. Almacenar el token en una cookie segura
       res.cookie("authToken", token, {
         httpOnly: true,
-        secure: false, // Cambiar a true en producción
+        secure: true, // Cambiar a true en producción
         maxAge: 3600000, // 1 hora
+        sameSite: 'strict',
       });
 
       // 5. ¡¡Añadimos la respuesta de éxito que faltaba!!
