@@ -8,8 +8,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Unique } from
 @Entity('usuarios')
 @Unique(['email'])
 export class Usuario {
-    
-  @PrimaryGeneratedColumn('increment', { name: 'id_usuario' })
+ @PrimaryGeneratedColumn({ type: 'int', name: 'id_usuario' })
   id!: number; 
 
   @Column({ type: 'varchar', length: 255 })
