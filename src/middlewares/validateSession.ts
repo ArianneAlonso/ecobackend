@@ -12,16 +12,15 @@ export class SessionValidator {
   static async validateSession(
   req: AuthenticatedRequest,
   res: ResponseLike,
-  next: NextFunction // 👈 Importante: La función para continuar
+  next: NextFunction
 ): Promise<void> {
   try {
-    // Se busca el token en cookies (si cookie-parser está configurado) o en sesión
-    const token = req.cookies.authToken || req.session.token; 
+    // Se busca el token en cookies
+    const token = req.cookies.authToken;
     if (!token) {
       return res.status(401).json({ message: "No se proporcionó token" });
     }
 
-    // Asumo que ValidateToken.validateTokenJWT funciona
     const user = await ValidateToken.validateTokenJWT(token);
     
     if (user) {

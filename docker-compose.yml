@@ -1,7 +1,9 @@
+version: '3.8'
+
 services:
-  postgres:
-    image: postgres:17.6
-    container_name: ecoresiduos-db
+  db:
+    image: postgres:17
+    container_name: ecoresiduos-database
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: ecoresiduos
@@ -9,4 +11,4 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./backup.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./backup.sql:/docker-entrypoint-initdb.d/backup.sql
