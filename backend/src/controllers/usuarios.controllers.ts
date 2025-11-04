@@ -31,7 +31,7 @@ export class UsuariosController {
     if (!token) {
       return res.status(401).json({ message: "Token inválido" });
     }
-    
+
     try {
       // .find() omite la contraseña (gracias a select: false) y trae todos los demás campos.
       const usuarios = await usuarioRepository.find();
@@ -50,7 +50,7 @@ export class UsuariosController {
     // Tomamos el token desde los headers de la peticion de la siguiente manera:
     const token = req.cookies.authToken;
 
-     if (!token) {
+    if (!token) {
       return res.status(401).json({ message: "Token inválido" });
     }
 
@@ -89,11 +89,9 @@ export class UsuariosController {
 
     if (!nombre || !email || !password) {
       // Se actualiza el mensaje de error
-      return res
-        .status(400)
-        .json({
-          mensaje: "Faltan campos requeridos: nombre, email y password.",
-        });
+      return res.status(400).json({
+        mensaje: "Faltan campos requeridos: nombre, email y password.",
+      });
     }
 
     try {
@@ -189,7 +187,7 @@ export class UsuariosController {
         httpOnly: true,
         secure: true, // Cambiar a true en producción
         maxAge: 3600000, // 1 hora
-        sameSite: 'strict',
+        sameSite: "strict",
       });
 
       // 5. ¡¡Añadimos la respuesta de éxito que faltaba!!
@@ -204,6 +202,30 @@ export class UsuariosController {
       });
     } catch {
       console.error("Error en iniciar sesión:", Error);
+      return res.status(500).json({ mensaje: "Error interno del servidor" });
+    }
+  }
+  // En la clase UsuariosController:
+
+  /**
+   * POST /usuarios/logout - Cierra la sesión eliminando la cookie JWT.
+   */
+  async cerrarSesion(req: Request, res: Response) {
+    try {
+      // 1. **Eliminar la Cookie:**
+      // Para "cerrar sesión", simplemente le decimos al navegador que borre
+      // la cookie que almacena el token de autenticación.
+      res.clearCookie("authToken", {
+        httpOnly: true,
+        secure: true, // Debe coincidir con la configuración usada en iniciarSesion
+        sameSite: "strict", // Debe coincidir con la configuración usada en iniciarSesion
+      });
+
+      // 2. **Enviar respuesta de éxito:**
+      // Respondemos al cliente indicando que la sesión ha sido cerrada exitosamente.
+      return res.status(200).json({ mensaje: "Sesión cerrada exitosamente" });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
       return res.status(500).json({ mensaje: "Error interno del servidor" });
     }
   }
