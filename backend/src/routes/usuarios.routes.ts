@@ -34,5 +34,6 @@ router.post('/register', registroValidation, controller.crearUsuario);
 router.post('/login', loginValidation, controller.iniciarSesion);
 router.get('/', SessionValidator.validateSession,controller.obtenerUsuarios);
 router.get('/:id', SessionValidator.validateSession, controller.obtenerUsuarioPorId);
+router.post('/logout', controller.cerrarSesion);
 
 export default router;
