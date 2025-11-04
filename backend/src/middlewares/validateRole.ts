@@ -25,9 +25,9 @@ export const validateRole = (allowedRoles: UserRole[]) => {
 
         // 2. Comprobar si el rol del usuario está en la lista de roles permitidos
         if (allowedRoles.includes(userRole as UserRole)) {
-            next(); // ✅ El rol es permitido, continúa al controlador
+            next(); // El rol es permitido, continúa al controlador
         } else {
-            // ❌ El rol no está en la lista permitida
+            // El rol no está en la lista permitida
             return res.status(403).json({ 
                 message: "Acceso denegado: Rol de usuario insuficiente.",
                 requiredRoles: allowedRoles
