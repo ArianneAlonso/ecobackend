@@ -1,0 +1,73 @@
+Quiero desarrollar una plataforma llamada EcoResiduos, que consiste en una app móvil para ciudadanos y un portal web para la municipalidad y comercios adheridos. La plataforma debe estar diseñada con React Native para la app móvil y React.js para la web, utilizando Tailwind CSS para estilos y siguiendo una paleta de colores relacionada con reciclaje y medio ambiente, priorizando verde oscuro (#006400) y verde claro (#8CC63F).
+
+La plataforma debe incluir las siguientes funcionalidades:
+
+App móvil (ciudadanos):
+
+Registro de usuario con ubicación para notificaciones personalizadas.
+
+Notificaciones push automáticas: aviso un día antes y recordatorio el día del paso del camión de reciclables; alertas sobre ecopuntos móviles cercanos.
+
+Mapa interactivo: ubicación de contenedores, tipo de materiales aceptados, horarios y días de recolección.
+
+Sistema de puntos ecológicos: acumulación por entregar residuos, asistir a eventos o usar ecopuntos; canje mediante escaneo de códigos QR; historial de puntos.
+
+Agenda de eventos ambientales: calendario con fechas, ubicaciones y temáticas.
+
+Gestión de materiales reciclables: opción para notificar materiales listos y verificación de tipo mediante IA.
+
+Visualización de beneficios: descuentos, premios y recompensas disponibles.
+
+Sección informativa: contenido legal, consejos y datos curiosos sobre reciclaje y medio ambiente.
+
+Portal web (municipalidad):
+
+Dashboard con métricas: cantidades recolectadas, usuarios activos, participación ciudadana mensual.
+
+Mapa de calor: identificación de zonas con alta o baja participación.
+
+Gestión de eventos y ecopuntos móviles: creación, publicación y difusión de horarios y ubicaciones.
+
+Gestión del sistema de puntos: generación de códigos QR y administración de recompensas.
+
+Gestión de contenedores: alta, edición, eliminación, asociación de materiales y horarios.
+
+Gestión del camión de reciclables: inicio digital del recorrido.
+
+Subida de contenido legal: normativa ambiental vigente.
+
+Portal web (comercios y locales adheridos):
+
+Gestión de beneficios comerciales: subir promociones, definir puntos necesarios para canje, generar códigos QR únicos para validar descuentos.
+
+Tecnología y librerías sugeridas:
+
+Frontend móvil: React Native, Tailwind (nativewind), React Navigation, Redux o Zustand, react-native-maps, react-native-push-notification, react-native-camera, react-native-qrcode-svg, react-native-calendars, react-native-chart-kit.
+
+Frontend web: React.js, Tailwind, Redux o Zustand, recharts o chart.js, react-leaflet o google-maps-react, react-big-calendar, qrcode.react.
+
+Backend: Node.js + Express, JWT para autenticación, REST o GraphQL, microservicio para IA de reconocimiento de materiales reciclables.
+
+Base de datos: PostgreSQL (usuarios, puntos, eventos, contenedores, beneficios) o Firebase Firestore como alternativa.
+
+Almacenamiento de archivos: Firebase Storage o AWS S3.
+
+Requisitos de diseño y UI/UX:
+
+Paleta principal: verde oscuro (#006400) y verde claro (#8CC63F), combinando con tonos neutros como beige o blanco para contraste.
+
+Interfaz clara, intuitiva y accesible, tanto para niños como adultos.
+
+Consistencia de estilos entre la app móvil y el portal web.
+
+Extras:
+
+Integrar IA para identificar materiales reciclables mediante foto o descripción.
+
+Sistema de notificaciones segmentadas por zona geográfica.
+
+Dashboard web con métricas visuales, gráficos y mapas de calor.
+
+Todo debe estar preparado para escalabilidad y mantenimiento, con modularización de componentes y microservicios.
+
+Generá un proyecto completo que contemple todas estas funcionalidades, separando claramente la parte móvil y web, integrando la paleta de colores y proponiendo una estructura de carpetas y librerías óptima para desarrollo y mantenimiento futuro.
