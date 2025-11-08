@@ -5,6 +5,13 @@ import type { DeepPartial } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
+import type { JwtPayload, UserRole } from "../interfaces/JwtPayload.js";
+
+declare module 'express-session' {
+  interface SessionData {
+    user?: JwtPayload
+  }
+}
 
 dotenv.config();
 
@@ -85,7 +92,7 @@ export class UsuariosController {
    * POST /usuarios/registrar - Crea un nuevo usuario (Registro).
    */
   async crearUsuario(req: Request, res: Response) {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, rol } = req.body;
 
     if (!nombre || !email || !password) {
       // Se actualiza el mensaje de error
@@ -104,6 +111,7 @@ export class UsuariosController {
         nombre,
         email,
         password: hashedPassword, // El hash se guardará en la columna 'contraseña'
+        rol,
       } as DeepPartial<Usuario>);
 
       // 3. Guardar en la base de datos (fechaRegistro se llena automáticamente)
@@ -126,6 +134,7 @@ export class UsuariosController {
           id: nuevoUsuario.id,
           nombre: nuevoUsuario.nombre,
           email: nuevoUsuario.email,
+          ril: nuevoUsuario.rol,
           fechaRegistro: nuevoUsuario.fechaRegistro,
         },
       });
@@ -157,7 +166,7 @@ export class UsuariosController {
       const usuario = await usuarioRepository.findOne({
         where: { email },
         // Listamos los campos necesarios para sobrescribir 'select: false' y obtener el hash
-        select: ["id", "nombre", "email", "password"],
+        select: ["id", "nombre", "email", "password", "rol"],
       });
 
       if (!usuario) {
@@ -173,32 +182,24 @@ export class UsuariosController {
 
       // 3. Generar un JWT
       const token = jwt.sign(
-        { id: usuario.id, email: usuario.email },
+        { id: usuario.id, email: usuario.email, rol: usuario.rol },
         JWT_SECRET,
         {
           expiresIn: "24h",
         }
       );
 
-      // Se eliminó la referencia a req.session.token (asumiendo que no se usa Express Session)
-
       // 4. Almacenar el token en una cookie segura
-      res.cookie("authToken", token, {
-        httpOnly: true,
-        secure: true, // Cambiar a true en producción
-        maxAge: 3600000, // 1 hora
-        sameSite: "strict",
-      });
+      req.session.user = {
+        id: usuario.id,
+        email: usuario.email,
+        role: usuario.rol as UserRole // <-- El rol se guarda en el servidor
+    };
 
       // 5. ¡¡Añadimos la respuesta de éxito que faltaba!!
       return res.status(200).json({
         mensaje: "Inicio de sesión exitoso",
-        token, // Opcional devolverlo en el body, pero la cookie ya lo contiene
-        usuario: {
-          id: usuario.id,
-          nombre: usuario.nombre,
-          email: usuario.email,
-        },
+        user: { id: usuario.id, email: usuario.email, role: usuario.rol }
       });
     } catch {
       console.error("Error en iniciar sesión:", Error);
@@ -210,23 +211,30 @@ export class UsuariosController {
   /**
    * POST /usuarios/logout - Cierra la sesión eliminando la cookie JWT.
    */
-  async cerrarSesion(req: Request, res: Response) {
-    try {
-      // 1. **Eliminar la Cookie:**
-      // Para "cerrar sesión", simplemente le decimos al navegador que borre
-      // la cookie que almacena el token de autenticación.
-      res.clearCookie("authToken", {
-        httpOnly: true,
-        secure: true, // Debe coincidir con la configuración usada en iniciarSesion
-        sameSite: "strict", // Debe coincidir con la configuración usada en iniciarSesion
-      });
+  // En la clase UsuariosController:
 
-      // 2. **Enviar respuesta de éxito:**
-      // Respondemos al cliente indicando que la sesión ha sido cerrada exitosamente.
-      return res.status(200).json({ mensaje: "Sesión cerrada exitosamente" });
+async cerrarSesion(req: Request, res: Response) {
+    try {
+        // 1. **Destruir la Sesión en el Servidor (CLAVE para express-session):**
+        // Llama a destroy() para eliminar los datos de la sesión del almacén de sesiones
+        // y limpiar el objeto req.session.
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Error al destruir la sesión:", err);
+                return res.status(500).json({ 
+                    mensaje: "No se pudo cerrar la sesión correctamente en el servidor." 
+                });
+            }
+
+            // 2. **Eliminar la Cookie de Sesión (Sesion ID):**
+            
+
+            // 3. **Enviar respuesta de éxito:**
+            return res.status(200).json({ mensaje: "Sesión cerrada exitosamente" });
+        });
+
     } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-      return res.status(500).json({ mensaje: "Error interno del servidor" });
+        console.error("Error al cerrar sesión (catch externo):", error);
+        return res.status(500).json({ mensaje: "Error interno del servidor" });
     }
-  }
-}
+}}

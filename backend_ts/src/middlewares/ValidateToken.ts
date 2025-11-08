@@ -4,12 +4,9 @@ import type { JwtPayload } from "../interfaces/JwtPayload";
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
-// Define el tipo de la carga útil (payload) del JWT
 
 export class ValidateToken {
-  /**
-   * Valida un token JWT y devuelve su carga útil (payload).
-   */
+
   static async validateTokenJWT(token: string): Promise<JwtPayload | null> {
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
