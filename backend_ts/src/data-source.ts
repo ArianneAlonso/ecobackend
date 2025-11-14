@@ -1,8 +1,12 @@
-// src/data-source.ts
 import { DataSource } from 'typeorm';
-import { Usuario } from './entidades/Usuarios';
 import * as dotenv from "dotenv";
 dotenv.config();
+
+// 1. Importar TODAS las entidades
+import { Usuario } from './entidades/Usuarios';
+import { Contenedor } from './entidades/Contenedor';
+import { EntregaMaterial } from './entidades/EntregaMaterial';
+import { PuntoEcologico } from './entidades/PuntoEcologico';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -12,6 +16,13 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD as string,
   database: process.env.DB_NAME as string,
   synchronize: false,
-  logging: true, // CAMBIADO A TRUE PARA VER QUERIES
-  entities: [Usuario],
+  logging: true, 
+  
+  // 2. Incluir TODAS las entidades en la lista
+  entities: [
+    Usuario, 
+    Contenedor,
+    EntregaMaterial,
+    PuntoEcologico
+  ],
 });

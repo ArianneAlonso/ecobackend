@@ -1,8 +1,10 @@
 // src/index.ts
+import 'reflect-metadata';
 import express from 'express';
 import { AppDataSource } from './data-source.js';
 import usuarioRoutes from './routes/usuarios.routes.js';
-import entregasRouter from './routes/entrega.routes.js';
+import entregasRoutes from './routes/entrega.routes.js';
+import  DashboardRoutes from './routes/dashboard.routes.js';
 import cors from 'cors';
 import morgan from 'morgan';
 import session from 'express-session';
@@ -15,19 +17,22 @@ AppDataSource.initialize().then(() => {
     origin:"http://localhost:5173",
     credentials: true,
 }));
-  app.use(session({
-        secret: process.env.SESSION_SECRET || 'mi_secreto_muy_seguro', // Usa una clave fuerte de env
-        resave: false, // Evita reescribir la sesión si no se modifica
-        saveUninitialized: false, // Evita guardar sesiones que no han sido modificadas (útil para login)
-        cookie: {
-            secure: false, // Cambiar a true en producción (requiere HTTPS)
-            httpOnly: true, // Protege contra XSS
-            maxAge: 3600000 // 1 hora
-        }
-        // store: /* Configuración para producción (ej. nuevo PgSessionStore) */
-    }));
+
+ app.use(session({
+    secret: process.env.SESSION_SECRET || 'mi-clave-secreta-fuerte',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+    }
+}));
+
   app.use(morgan('dev'));
   app.use('/usuarios', usuarioRoutes);
-  app.use('/entregas', entregasRouter);
+  app.use('/entregas', entregasRoutes);
+  app.use('/dashboard', DashboardRoutes);
   app.listen(3000, () => console.log('Servidor iniciado en puerto 3000'));
 });

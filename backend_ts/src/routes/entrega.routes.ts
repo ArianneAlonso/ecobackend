@@ -5,7 +5,26 @@ import { SessionValidator } from '../middlewares/validateSession';
 import { validateRole } from '../middlewares/validateRole';
 
 const router = Router();
+const entregasController = new EntregasController();
 
-router.post('/crear', SessionValidator.validateSession, validateRole(['admin']), EntregasController.crearEntrega);
+router.post(
+    '/',
+    SessionValidator.validateSession, 
+    validateRole(['administrador']),
+    entregasController.crearEntrega
+);
+
+router.get(
+    '/mis-entregas',
+    SessionValidator.validateSession, 
+    entregasController.getEntregasByUsuario
+);
+
+router.get(
+    '/', // La ruta base GET /entregas
+    SessionValidator.validateSession, 
+    validateRole(['administrador', 'operador']),
+    entregasController.getAllEntregas
+);
 
 export default router;

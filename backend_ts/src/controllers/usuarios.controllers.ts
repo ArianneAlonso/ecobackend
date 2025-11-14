@@ -5,7 +5,7 @@ import type { DeepPartial } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import type { JwtPayload, UserRole } from "../interfaces/JwtPayload.js";
+import type { JwtPayload, UserRole} from "../interfaces/JwtPayload.js";
 
 declare module 'express-session' {
   interface SessionData {

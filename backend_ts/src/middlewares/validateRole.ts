@@ -1,8 +1,6 @@
 import type { AuthenticatedRequest } from "../interfaces/AutenticatedRequest";
 import type { NextFunction, Response } from "express";
-
-// Define los posibles roles para una mejor seguridad de tipos (ej. 'admin' | 'usuario')
-type UserRole = 'admin' | 'usuario' | 'operador';
+import type { UserRole } from "../interfaces/JwtPayload";
 
 /**
  * Retorna un middleware que verifica si el usuario autenticado tiene un rol permitido.

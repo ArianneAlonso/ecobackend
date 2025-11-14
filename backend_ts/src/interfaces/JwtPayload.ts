@@ -1,5 +1,5 @@
 // Define un tipo para los roles para garantizar la seguridad de tipos
-export type UserRole = 'admin' | 'usuario' | 'operador';
+export type UserRole = 'administrador' | 'usuario' | 'operador';
 
 export interface JwtPayload {
     id: number; 
