@@ -92,64 +92,66 @@ export class UsuariosController {
    * POST /usuarios/registrar - Crea un nuevo usuario (Registro).
    */
   async crearUsuario(req: Request, res: Response) {
-    const { nombre, email, password, rol } = req.body;
+    // 1. Desestructuración de datos y asignación del rol por defecto
+    const { nombre, email, password } = req.body;
+    // Asigna "usuario" si el campo 'rol' no existe o es nulo/vacío
+    const rol = req.body.rol || "usuario"; 
 
     if (!nombre || !email || !password) {
-      // Se actualiza el mensaje de error
-      return res.status(400).json({
-        mensaje: "Faltan campos requeridos: nombre, email y password.",
-      });
+        return res.status(400).json({
+            mensaje: "Faltan campos requeridos: nombre, email y password.",
+        });
     }
 
     try {
-      // 1. Encriptar la contraseña
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+        // 2. Encriptar la contraseña
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-      // 2. Crear la instancia del usuario (se elimina la referencia a edad)
-      const nuevoUsuario = usuarioRepository.create({
-        nombre,
-        email,
-        password: hashedPassword, // El hash se guardará en la columna 'contraseña'
-        rol,
-      } as DeepPartial<Usuario>);
+        // 3. Crear la instancia del usuario
+        const nuevoUsuario = usuarioRepository.create({
+            nombre,
+            email,
+            password: hashedPassword,
+            rol, // <-- Usamos la variable 'rol' que ahora tiene el valor por defecto si fue necesario
+        } as DeepPartial<Usuario>);
 
-      // 3. Guardar en la base de datos (fechaRegistro se llena automáticamente)
-      await usuarioRepository.save(nuevoUsuario);
+        // 4. Guardar en la base de datos
+        await usuarioRepository.save(nuevoUsuario);
 
-      // 4. Generar un JWT
-      const token = jwt.sign(
-        { id: nuevoUsuario.id, email: nuevoUsuario.email },
-        JWT_SECRET,
-        {
-          expiresIn: "24h",
-        }
-      );
+        // 5. Generar un JWT
+        const token = jwt.sign(
+            { id: nuevoUsuario.id, email: nuevoUsuario.email },
+            JWT_SECRET,
+            {
+                expiresIn: "24h",
+            }
+        );
 
-      // 5. Devolver el token y los datos del usuario (se elimina la referencia a edad)
-      return res.status(201).json({
-        mensaje: "Usuario registrado exitosamente",
-        token,
-        usuario: {
-          id: nuevoUsuario.id,
-          nombre: nuevoUsuario.nombre,
-          email: nuevoUsuario.email,
-          ril: nuevoUsuario.rol,
-          fechaRegistro: nuevoUsuario.fechaRegistro,
-        },
-      });
+        // 6. Devolver el token y los datos del usuario
+        return res.status(201).json({
+            mensaje: "Usuario registrado exitosamente",
+            token,
+            usuario: {
+                id: nuevoUsuario.id,
+                nombre: nuevoUsuario.nombre,
+                email: nuevoUsuario.email,
+                rol: nuevoUsuario.rol, // Asegúrate de que esto sea 'rol' y no 'ril'
+                fechaRegistro: nuevoUsuario.fechaRegistro,
+            },
+        });
     } catch (error: any) {
-      // Código de error 23505 es para violación de restricción única en PostgreSQL
-      if (error.code === "23505") {
-        return res
-          .status(409)
-          .json({ mensaje: "El email ya está registrado." });
-      }
+        // ... (Manejo de errores se mantiene igual)
+        if (error.code === "23505") {
+            return res
+                .status(409)
+                .json({ mensaje: "El email ya está registrado." });
+        }
 
-      console.error("Error al crear usuario:", error);
-      return res.status(500).json({ mensaje: "Error interno del servidor" });
+        console.error("Error al crear usuario:", error);
+        return res.status(500).json({ mensaje: "Error interno del servidor" });
     }
-  }
+}
 
   /**
    * POST /usuarios/login - Inicia sesión y devuelve un token JWT.
