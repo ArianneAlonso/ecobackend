@@ -11,32 +11,38 @@ export class SessionValidator {
   ): Promise<Response | void> {
 
     // 1. PRIORIDAD: Chequear Sesión (Express-Session)
-    // Usado por roles de gestión: Administrador y Operario.
     if (req.session && req.session.user) {
         req.user = req.session.user;
         return next(); 
     }
 
     // 2. FALLBACK: Chequear JWT 
+    
     const authHeader = req.headers.authorization;
-    const token = authHeader?.split(' ')[1];
+    let token = authHeader?.split(' ')[1]; // ➡️ 1. Intenta obtenerlo de "Bearer <token>"
 
+    // ➡️ 2. Si no se encontró, intenta obtenerlo del query string (?token=...)
+    if (!token && req.query.token) {
+        // req.query puede ser string o array de string, por eso usamos 'as string'
+        token = req.query.token as string;
+    }
+    
     if (!token) {
-        // Devuelve un objeto Response
+        // No hay ni sesión ni token. Acceso denegado.
         return res.status(401).json({ message: "Acceso denegado: Se requiere autenticación." });
     }
 
     // Usar la utilidad de validación JWT
+    // NOTA: Asumo que 'decodedPayload.role' está en minúsculas para la comparación.
     const decodedPayload = await ValidateToken.validateTokenJWT(token);
 
     if (!decodedPayload) {
-        // Devuelve un objeto Response
         return res.status(403).json({ message: "Token inválido o expirado." });
     }
     
     // 3. Chequeo de Seguridad (Anti-Reversión): 
+    // Bloquear el uso de JWT a los roles de gestión.
    if (decodedPayload.role === 'administrador' || decodedPayload.role === 'operador') {
-        // Devuelve un objeto Response
         return res.status(403).json({ 
             message: "Acceso prohibido. Este rol debe usar el sistema de sesión." 
         });
@@ -44,6 +50,6 @@ export class SessionValidator {
 
     // 4. Si es un Usuario Estándar con JWT válido, continuar
     req.user = decodedPayload;
-    next(); // Llama a next(), lo cual implícitamente retorna void.
+    next(); 
   }
 }
