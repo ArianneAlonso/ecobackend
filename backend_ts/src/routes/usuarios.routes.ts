@@ -3,7 +3,7 @@ import { UsuariosController } from '../controllers/usuarios.controllers';
 import { body } from 'express-validator';
 import { ValidationsErrors } from '../middlewares/handleValidationErrors';
 import { SessionValidator } from '../middlewares/validateSession';
-
+import { validateRole } from '../middlewares/validateRole';
 const router = Router();
 const controller = new UsuariosController();
 
@@ -32,7 +32,7 @@ const loginValidation = [
 // Rutas para el recurso '/usuarios'
 router.post('/register', registroValidation, controller.crearUsuario);
 router.post('/login', loginValidation, controller.iniciarSesion);
-router.get('/', SessionValidator.validateSession,controller.obtenerUsuarios);
+router.get('/', SessionValidator.validateSession,validateRole(['administrador']),controller.obtenerUsuarios);
 router.get('/:id', SessionValidator.validateSession, controller.obtenerUsuarioPorId);
 router.post('/logout', controller.cerrarSesion);
 

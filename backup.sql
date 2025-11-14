@@ -174,17 +174,5 @@ ALTER TABLE ONLY public.entregas_materiales
 -- Claves foráneas para id_referencia en puntos_ecologicos (Relaciones Condicionales)
 -- Esto permite que id_referencia apunte a la tabla correcta según el tipo_transaccion
 
--- Relación 1: Tipo 'entrega' apunta a la tabla entregas_materiales
 ALTER TABLE ONLY public.puntos_ecologicos
-    ADD CONSTRAINT puntos_ecologicos_entrega_fkey FOREIGN KEY (id_referencia) REFERENCES public.entregas_materiales(id_entrega);
-
--- Relación 2: Tipo 'evento' apunta a la tabla eventos_ambientales
-ALTER TABLE ONLY public.puntos_ecologicos
-    ADD CONSTRAINT puntos_ecologicos_evento_fkey FOREIGN KEY (id_referencia) REFERENCES public.eventos_ambientales(id_evento);
-
--- Relación 3: Tipo 'canje' apunta a la tabla canjes_premios
-ALTER TABLE ONLY public.puntos_ecologicos
-    ADD CONSTRAINT puntos_ecologicos_canje_fkey FOREIGN KEY (id_referencia) REFERENCES public.canjes_premios(id_canje);
-
-ALTER TABLE public.puntos_ecologicos ADD CONSTRAINT chk_id_referencia_entrega
-    CHECK (tipo_transaccion = 'entrega' OR EXISTS (SELECT 1 FROM entregas_materiales WHERE id_entrega = id_referencia));
+    ADD CONSTRAINT puntos_ecologicos_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario);

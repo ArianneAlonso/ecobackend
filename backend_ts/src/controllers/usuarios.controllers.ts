@@ -156,58 +156,72 @@ export class UsuariosController {
   /**
    * POST /usuarios/login - Inicia sesión y devuelve un token JWT.
    */
-  async iniciarSesion(req: Request, res: Response) {
+  public iniciarSesion = async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ mensaje: "Se requiere email y password." });
+        return res.status(400).json({ mensaje: "Se requiere email y password." });
     }
 
     try {
-      // 1. Buscar el usuario por email, *forzando* la selección de la contraseña
-      const usuario = await usuarioRepository.findOne({
-        where: { email },
-        // Listamos los campos necesarios para sobrescribir 'select: false' y obtener el hash
-        select: ["id", "nombre", "email", "password", "rol"],
-      });
+        // 1. Buscar el usuario y validar contraseña (Tu lógica existente)
+        const usuario = await usuarioRepository.findOne({
+            where: { email },
+            select: ["id", "nombre", "email", "password", "rol"],
+        });
 
-      if (!usuario) {
-        return res.status(401).json({ mensaje: "Credenciales inválidas" });
-      }
-
-      // 2. Comparar la contraseña proporcionada con el hash (propiedad 'password')
-      const passwordValida = await bcrypt.compare(password, usuario.password);
-
-      if (!passwordValida) {
-        return res.status(401).json({ mensaje: "Credenciales inválidas" });
-      }
-
-      // 3. Generar un JWT
-      const token = jwt.sign(
-        { id: usuario.id, email: usuario.email, rol: usuario.rol },
-        JWT_SECRET,
-        {
-          expiresIn: "24h",
+        if (!usuario) {
+            return res.status(401).json({ mensaje: "Credenciales inválidas" });
         }
-      );
 
-      // 4. Almacenar el token en una cookie segura
-      req.session.user = {
-        id: usuario.id,
-        email: usuario.email,
-        role: usuario.rol as UserRole // <-- El rol se guarda en el servidor
-    };
+        const passwordValida = await bcrypt.compare(password, usuario.password);
 
-      // 5. ¡¡Añadimos la respuesta de éxito que faltaba!!
-      return res.status(200).json({
-        mensaje: "Inicio de sesión exitoso",
-        user: { id: usuario.id, email: usuario.email, role: usuario.rol }
-      });
-    } catch {
-      console.error("Error en iniciar sesión:", Error);
-      return res.status(500).json({ mensaje: "Error interno del servidor" });
+        if (!passwordValida) {
+            return res.status(401).json({ mensaje: "Credenciales inválidas" });
+        }
+
+        // 2. Definir el Payload Base
+        const userPayload = {
+            id: usuario.id,
+            email: usuario.email,
+            role: usuario.rol as UserRole // Tipado correcto del rol
+        };
+        
+        // 3. LÓGICA HÍBRIDA: Decidir el método de autenticación por rol
+        const esSesionDeServidor = (
+            userPayload.role === 'administrador' || userPayload.role === 'operador'
+        );
+
+        if (esSesionDeServidor) {
+            // A. Administradores/Operarios: Usan Sesión de Servidor
+            // Establecer la sesión. El cliente recibirá una cookie de sesión.
+            req.session.user = userPayload; 
+
+            return res.status(200).json({
+                mensaje: "Inicio de sesión exitoso (Sesión de Servidor)",
+                user: userPayload
+            });
+        } else {
+            // B. Usuarios Estándar: Usan JWT
+            // Generar y devolver el token.
+            const token = jwt.sign(
+                { id: usuario.id, email: usuario.email, rol: usuario.rol },
+                JWT_SECRET,
+                { expiresIn: "24h" }
+            );
+
+            return res.status(200).json({
+                mensaje: "Inicio de sesión exitoso (JWT)",
+                token, // Se devuelve el token
+                user: userPayload
+            });
+        }
+    } catch (error) {
+        // 4. Manejo de Errores: Usar 'error' capturado, no la clase 'Error'
+        console.error("Error en iniciar sesión:", error); 
+        return res.status(500).json({ mensaje: "Error interno del servidor" });
     }
-  }
+};
   // En la clase UsuariosController:
 
   /**
