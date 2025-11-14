@@ -11,7 +11,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- Tipo ENUM
 CREATE TYPE public.tipo_transaccion_enum AS ENUM (
     'entrega',
     'evento',
@@ -26,7 +25,23 @@ CREATE TYPE public.rol_enum AS ENUM (
 );
 ALTER TYPE public.rol_enum OWNER TO admin;
 
--- Tabla: usuarios 
+-- Tabla: materiales
+CREATE TABLE public.materiales (
+    id_material integer NOT NULL,
+    nombre character varying(100) NOT NULL
+);
+ALTER TABLE public.materiales OWNER TO admin;
+
+CREATE SEQUENCE public.materiales_id_material_seq
+    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+ALTER SEQUENCE public.materiales_id_material_seq OWNER TO admin;
+ALTER SEQUENCE public.materiales_id_material_seq OWNED BY public.materiales.id_material;
+
+ALTER TABLE ONLY public.materiales ALTER COLUMN id_material SET DEFAULT nextval('public.materiales_id_material_seq'::regclass);
+ALTER TABLE ONLY public.materiales ADD CONSTRAINT materiales_pkey PRIMARY KEY (id_material);
+ALTER TABLE ONLY public.materiales ADD CONSTRAINT materiales_nombre_key UNIQUE (nombre);
+
+-- Tabla: usuarios
 CREATE TABLE public.usuarios (
     id_usuario integer NOT NULL,
     nombre text NOT NULL,
@@ -45,7 +60,7 @@ ALTER TABLE ONLY public.usuarios ALTER COLUMN id_usuario SET DEFAULT nextval('pu
 ALTER TABLE ONLY public.usuarios ADD CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario);
 ALTER TABLE ONLY public.usuarios ADD CONSTRAINT usuarios_email_key UNIQUE (email);
 
-
+-- Tabla: contenedores
 CREATE TABLE public.contenedores (
     id_contenedor integer NOT NULL,
     latitud numeric(9,6) NOT NULL,
@@ -62,7 +77,7 @@ ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNED BY public.contenedore
 ALTER TABLE ONLY public.contenedores ALTER COLUMN id_contenedor SET DEFAULT nextval('public.contenedores_id_contenedor_seq'::regclass);
 ALTER TABLE ONLY public.contenedores ADD CONSTRAINT contenedores_pkey PRIMARY KEY (id_contenedor);
 
-
+-- Tabla: eventos_ambientales
 CREATE TABLE public.eventos_ambientales (
     id_evento integer NOT NULL,
     nombre text NOT NULL,
@@ -82,7 +97,7 @@ ALTER SEQUENCE public.eventos_ambientales_id_evento_seq OWNED BY public.eventos_
 ALTER TABLE ONLY public.eventos_ambientales ALTER COLUMN id_evento SET DEFAULT nextval('public.eventos_ambientales_id_evento_seq'::regclass);
 ALTER TABLE ONLY public.eventos_ambientales ADD CONSTRAINT eventos_ambientales_pkey PRIMARY KEY (id_evento);
 
-
+-- Tabla: premios
 CREATE TABLE public.premios (
     id_premio integer NOT NULL,
     nombre character varying(100) NOT NULL,
@@ -99,11 +114,12 @@ ALTER TABLE ONLY public.premios ALTER COLUMN id_premio SET DEFAULT nextval('publ
 ALTER TABLE ONLY public.premios ADD CONSTRAINT premios_pkey PRIMARY KEY (id_premio);
 
 
+-- Tabla: entregas_materiales
 CREATE TABLE public.entregas_materiales (
     id_entrega integer NOT NULL,
     id_usuario integer NOT NULL,
     id_contenedor integer,
-    material character varying(100) NOT NULL,
+    id_material integer NOT NULL, 
     peso_kg numeric(5,2) NOT NULL,
     puntos_ganados integer NOT NULL,
     fecha_entrega timestamp without time zone DEFAULT CURRENT_TIMESTAMP
@@ -115,8 +131,7 @@ ALTER SEQUENCE public.entregas_materiales_id_entrega_seq OWNED BY public.entrega
 ALTER TABLE ONLY public.entregas_materiales ALTER COLUMN id_entrega SET DEFAULT nextval('public.entregas_materiales_id_entrega_seq'::regclass);
 ALTER TABLE ONLY public.entregas_materiales ADD CONSTRAINT entregas_materiales_pkey PRIMARY KEY (id_entrega);
 
-
--- Tabla: canjes_premios 
+-- Tabla: canjes_premios
 CREATE TABLE public.canjes_premios (
     id_canje integer NOT NULL,
     id_usuario integer NOT NULL,
@@ -132,7 +147,7 @@ ALTER SEQUENCE public.canjes_premios_id_canje_seq OWNED BY public.canjes_premios
 ALTER TABLE ONLY public.canjes_premios ALTER COLUMN id_canje SET DEFAULT nextval('public.canjes_premios_id_canje_seq'::regclass);
 ALTER TABLE ONLY public.canjes_premios ADD CONSTRAINT canjes_premios_pkey PRIMARY KEY (id_canje);
 
--- Tabla: puntos_ecologicos (Central de transacciones)
+-- Tabla: puntos_ecologicos
 CREATE TABLE public.puntos_ecologicos (
     id_transaccion integer NOT NULL,
     id_usuario integer NOT NULL,
@@ -151,10 +166,6 @@ ALTER SEQUENCE public.puntos_ecologicos_id_transaccion_seq OWNED BY public.punto
 ALTER TABLE ONLY public.puntos_ecologicos ALTER COLUMN id_transaccion SET DEFAULT nextval('public.puntos_ecologicos_id_transaccion_seq'::regclass);
 ALTER TABLE ONLY public.puntos_ecologicos ADD CONSTRAINT puntos_ecologicos_pkey PRIMARY KEY (id_transaccion);
 
--- ------------------------------
--- RELACIONES / CLAVES FORÁNEAS
--- ------------------------------
-
 -- Relaciones de la tabla puntos_ecologicos
 ALTER TABLE ONLY public.puntos_ecologicos
     ADD CONSTRAINT puntos_ecologicos_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario);
@@ -170,9 +181,5 @@ ALTER TABLE ONLY public.entregas_materiales
     ADD CONSTRAINT entregas_materiales_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario);
 ALTER TABLE ONLY public.entregas_materiales
     ADD CONSTRAINT entregas_materiales_id_contenedor_fkey FOREIGN KEY (id_contenedor) REFERENCES public.contenedores(id_contenedor);
-
--- Claves foráneas para id_referencia en puntos_ecologicos (Relaciones Condicionales)
--- Esto permite que id_referencia apunte a la tabla correcta según el tipo_transaccion
-
-ALTER TABLE ONLY public.puntos_ecologicos
-    ADD CONSTRAINT puntos_ecologicos_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario);
+ALTER TABLE ONLY public.entregas_materiales
+    ADD CONSTRAINT entregas_materiales_id_material_fkey FOREIGN KEY (id_material) REFERENCES public.materiales(id_material);

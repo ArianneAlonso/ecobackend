@@ -1,41 +1,47 @@
+// src/entidades/EntregaMaterial.ts
+
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { Usuario } from './Usuarios'; 
 import { Contenedor } from './Contenedor'; 
+import { Material } from './Material';
 
 @Entity('entregas_materiales')
 export class EntregaMaterial {
     @PrimaryGeneratedColumn({ type: 'int', name: 'id_entrega' })
     idEntrega!: number;
 
-    // Relación N:1 con Usuario: Se especifica el tipo 'int' de la columna
+    // Relación N:1 con Usuario
     @Column({ name: 'id_usuario', type: 'int' }) 
-    idUsuario!: number; // Columna que guarda la FK
+    idUsuario!: number; 
 
     @ManyToOne(() => Usuario)
     @JoinColumn({ name: 'id_usuario' })
-    usuario!: Usuario; // Propiedad que carga la Entidad
+    usuario!: Usuario; 
 
-    // Relación N:1 con Contenedor: Se especifica el tipo 'int' y nullable: true
+    // Relación N:1 con Contenedor
     @Column({ name: 'id_contenedor', type: 'int', nullable: true }) 
-    idContenedor!: number | null; // Columna que guarda la FK
+    idContenedor!: number | null; 
 
     @ManyToOne(() => Contenedor, { nullable: true })
     @JoinColumn({ name: 'id_contenedor' })
     contenedor!: Contenedor;
 
-    // Especificamos el tipo SQL 'varchar'
-    @Column({ type: 'varchar', length: 100 })
-    material!: string;
+    
+    @Column({ name: 'id_material', type: 'int' }) 
+    idMaterial!: number; 
 
-    // Especificamos el tipo SQL 'numeric' (para decimales)
+    @ManyToOne(() => Material)
+    @JoinColumn({ name: 'id_material' })
+    material!: Material;
+
+    
     @Column({ type: 'numeric', precision: 5, scale: 2, name: 'peso_kg' })
     pesoKg!: number;
 
-    // Especificamos el tipo SQL 'int'
+    
     @Column({ type: 'int', name: 'puntos_ganados' })
     puntosGanados!: number;
 
-    // CreateDateColumn infiere el tipo TIMESTAMP, pero se deja así por ser decorador específico
     @CreateDateColumn({ name: 'fecha_entrega' })
     fechaEntrega!: Date;
 }
