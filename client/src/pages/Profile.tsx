@@ -1,0 +1,412 @@
+import React from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { 
+  User, 
+  MapPin, 
+  Bell, 
+  HelpCircle, 
+  LogOut, 
+  ChevronRight, 
+  Award, 
+  Leaf 
+} from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+interface MenuItem {
+  icon: any;
+  label: string;
+  description: string;
+}
+
+interface Stat {
+  label: string;
+  value: string;
+  icon: any;
+}
+
+const menuItems: MenuItem[] = [
+  { icon: MapPin, label: "Mi Ubicación", description: "Av. Principal 123" },
+  { icon: Bell, label: "Notificaciones", description: "Activas" },
+  { icon: HelpCircle, label: "Ayuda y Soporte", description: "Centro de ayuda" },
+];
+
+const stats: Stat[] = [
+  { label: "Retiros", value: "12", icon: Leaf },
+  { label: "Eventos", value: "5", icon: Award },
+  { label: "Kg Reciclados", value: "48", icon: Leaf },
+];
+
+export default function Profile() {
+  const navigation = useNavigation<any>();
+  const currentPoints = 1250;
+  const pointsChange = 85;
+  const userLevel = "Eco Warrior";
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Cerrar Sesión',
+      '¿Estás seguro de que quieres cerrar sesión?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Cerrar Sesión',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('userToken');
+              await AsyncStorage.removeItem('userRole');
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'LoginRegister' }],
+              });
+            } catch (error) {
+              console.error('Error al cerrar sesión:', error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleMenuItemPress = (label: string) => {
+    Alert.alert('Próximamente', `Función "${label}" en desarrollo`);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Mi Perfil</Text>
+      </View>
+
+      <ScrollView 
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+      >
+        {/* Points Card */}
+        <View style={styles.pointsCard}>
+          <View style={styles.pointsHeader}>
+            <Text style={styles.pointsLabel}>Puntos Disponibles</Text>
+            <View style={styles.changeContainer}>
+              <Text style={styles.changeText}>+{pointsChange}</Text>
+              <Text style={styles.changeLabel}>esta semana</Text>
+            </View>
+          </View>
+          <Text style={styles.pointsValue}>{currentPoints.toLocaleString()}</Text>
+          <Text style={styles.pointsSubtext}>pts</Text>
+        </View>
+
+        {/* Profile Card */}
+        <View style={styles.profileCard}>
+          <View style={styles.profileHeader}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>U</Text>
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.userName}>Usuario EcoResiduos</Text>
+              <Text style={styles.userEmail}>usuario@email.com</Text>
+              <View style={styles.levelBadge}>
+                <Award size={14} color="#666" />
+                <Text style={styles.levelBadgeText}>{userLevel}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Stats Grid */}
+          <View style={styles.statsGrid}>
+            {stats.map((stat) => {
+              const IconComponent = stat.icon;
+              return (
+                <View key={stat.label} style={styles.statItem}>
+                  <View style={styles.statIconContainer}>
+                    <IconComponent size={24} color="#9ccc65" />
+                  </View>
+                  <Text style={styles.statValue}>{stat.value}</Text>
+                  <Text style={styles.statLabel}>{stat.label}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Settings Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Configuración</Text>
+          
+          <View style={styles.menuCard}>
+            {menuItems.map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <TouchableOpacity
+                  key={item.label}
+                  style={[
+                    styles.menuItem,
+                    index !== menuItems.length - 1 && styles.menuItemBorder
+                  ]}
+                  onPress={() => handleMenuItemPress(item.label)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.menuIconContainer}>
+                    <IconComponent size={20} color="#333" />
+                  </View>
+                  <View style={styles.menuContent}>
+                    <Text style={styles.menuLabel}>{item.label}</Text>
+                    <Text style={styles.menuDescription}>{item.description}</Text>
+                  </View>
+                  <ChevronRight size={20} color="#999" />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.7}
+        >
+          <LogOut size={20} color="#666" />
+          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 16,
+    paddingBottom: 80,
+  },
+  pointsCard: {
+    backgroundColor: '#9ccc65',
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  pointsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  pointsLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
+  },
+  changeContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  changeText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  changeLabel: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  pointsValue: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: -8,
+  },
+  pointsSubtext: {
+    fontSize: 18,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  profileCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#9ccc65',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  avatarText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+  levelBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  levelBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 11,
+    color: '#666',
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  menuCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+  },
+  menuItemBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  menuIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  menuContent: {
+    flex: 1,
+  },
+  menuLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 2,
+  },
+  menuDescription: {
+    fontSize: 13,
+    color: '#999',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    paddingVertical: 14,
+    backgroundColor: '#fff',
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
+});
