@@ -1,4 +1,3 @@
-// src/index.ts
 import 'reflect-metadata';
 import express from 'express';
 import { AppDataSource } from './data-source.js';
@@ -8,7 +7,7 @@ import DashboardRoutes from './routes/dashboard.routes.js';
 import cors from 'cors';
 import morgan from 'morgan';
 import session from 'express-session';
-import dotenv from 'dotenv'; // ⬅️ Importar dotenv para leer SESSION_SECRET
+import dotenv from 'dotenv';
 
 // Cargar variables de entorno
 dotenv.config();
