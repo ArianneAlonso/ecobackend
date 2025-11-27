@@ -32,12 +32,13 @@ const loginValidation = [
 // Rutas para el recurso '/usuarios'
 router.post('/register', registroValidation, controller.crearUsuario);
 router.post('/login', loginValidation, controller.iniciarSesion);
-router.get('/', SessionValidator.validateSession,authorizeRole(['administrador']),controller.obtenerUsuarios);
-router.get('/:id', SessionValidator.validateSession, controller.obtenerUsuarioPorId);
-router.post('/logout', controller.cerrarSesion);
 router.get(
     '/session',
     SessionValidator.validateSession, // El middleware se usa como método estático
     controller.verificarSesion 
 );
+router.get('/', SessionValidator.validateSession,authorizeRole(['administrador']),controller.obtenerUsuarios);
+router.get('/:id', SessionValidator.validateSession, controller.obtenerUsuarioPorId);
+router.post('/logout', controller.cerrarSesion);
+
 export default router;

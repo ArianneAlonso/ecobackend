@@ -8,7 +8,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser'; // 1. IMPORTAR cookie-parser
+import cookieParser from 'cookie-parser'; 
+import * as http from 'http'; // 1. IMPORTAR MÓDULO HTTP
 
 // Cargar variables de entorno
 dotenv.config();
@@ -54,6 +55,9 @@ AppDataSource.initialize().then(() => {
     app.use('/entregas', entregasRoutes);
     app.use('/dashboard', DashboardRoutes);
 
-    // Iniciar servidor
-    app.listen(3000, () => console.log('Servidor iniciado en puerto 3000'));
+    // 6. Iniciar servidor con tamaño de encabezado aumentado
+    // AUMENTADO A 64KB (65536 bytes) para resolver el 400 Bad Request causado por cookies grandes.
+    const server = http.createServer({ maxHeaderSize: 65536 }, app);
+    server.listen(3000, () => console.log('Servidor iniciado en puerto 3000 (Max Header Size aumentado a 64KB)'));
+
 }).catch(error => console.error("Error al inicializar la DB:", error));
