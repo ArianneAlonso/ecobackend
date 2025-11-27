@@ -8,6 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import session from 'express-session';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser'; // 1. IMPORTAR cookie-parser
 
 // Cargar variables de entorno
 dotenv.config();
@@ -24,25 +25,23 @@ AppDataSource.initialize().then(() => {
     app.use(cors({
         // Esto permite que el frontend de desarrollo (http://localhost:5173) acceda al backend.
         origin: 'http://localhost:5173',
-        // Esto es ESENCIAL para que las cookies de sesión (connect.sid) sean aceptadas.
+        // Esto es ESENCIAL para que las cookies de sesión (connect.sid y authToken) sean aceptadas.
         credentials: true, 
     }));
 
-    // 3. Configuración de EXPRESS-SESSION
+    // 3. MIDDLEWARE CLAVE: Para que Express pueda leer las cookies JWT (authToken)
+    // Debe ir antes de cualquier validador de cookies.
+    app.use(cookieParser()); 
+
+    // 4. Configuración de EXPRESS-SESSION
     app.use(session({
         secret: process.env.SESSION_SECRET || 'mi-clave-secreta-fuerte',
         resave: false,
         saveUninitialized: false,
         cookie: { 
             maxAge: 1000 * 60 * 60 * 24, // 24 horas
-            // IMPORTANTE: Cambiamos httpOnly a true por seguridad.
             httpOnly: true, 
-            
-            // CORRECCIÓN: Ajustamos 'secure' para que funcione en HTTP local.
-            // La cookie solo se enviará sobre HTTPS en producción, pero funcionará en HTTP en desarrollo.
             secure: isProduction, 
-
-            // Para que la cookie se envíe en solicitudes CORS
             sameSite: isProduction ? 'none' : 'lax', 
         }
     }));
@@ -50,7 +49,7 @@ AppDataSource.initialize().then(() => {
     // Middleware de log
     app.use(morgan('dev'));
 
-    // 4. Configuración de Rutas
+    // 5. Configuración de Rutas
     app.use('/usuarios', usuarioRoutes);
     app.use('/entregas', entregasRoutes);
     app.use('/dashboard', DashboardRoutes);
