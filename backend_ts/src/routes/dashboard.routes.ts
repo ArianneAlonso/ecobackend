@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { DashboardController } from '../controllers/DashboardController';
+import { DashboardController } from '../controllers/dashboard.controller';
 import { SessionValidator } from '../middlewares/validateSession';
-import { validateRole } from '../middlewares/validateRole';
+import { authorizeRole } from '../middlewares/validateRole';
 
 const router = Router();
 const dashboardController = new DashboardController();
@@ -11,7 +11,7 @@ router.get(
     '/',
     SessionValidator.validateSession,
     // Solo Administradores y Operadores deberían ver estos datos
-    validateRole(['administrador']),
+    authorizeRole(['administrador']),
     dashboardController.getKpis
 );
 

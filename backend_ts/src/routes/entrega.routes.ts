@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import { EntregasController } from '../controllers/entrega.controller';
 import { SessionValidator } from '../middlewares/validateSession';
-import { validateRole } from '../middlewares/validateRole';
+import { authorizeRole } from '../middlewares/validateRole';
 
 const router = Router();
 const entregasController = new EntregasController();
@@ -10,7 +10,7 @@ const entregasController = new EntregasController();
 router.post(
     '/',
     SessionValidator.validateSession, 
-    validateRole(['administrador']),
+    authorizeRole(['administrador']),
     entregasController.crearEntrega
 );
 
@@ -23,7 +23,7 @@ router.get(
 router.get(
     '/', // La ruta base GET /entregas
     SessionValidator.validateSession, 
-    validateRole(['administrador', 'operador']),
+    authorizeRole(['administrador', 'operador']),
     entregasController.getAllEntregas
 );
 
