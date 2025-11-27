@@ -7,8 +7,7 @@ import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import type { JwtPayload, UserRole } from "../interfaces/JwtPayload.js";
 import type { CookieOptions } from "express";
-// IMPORTACIÓN NECESARIA para el método verificarSesion
-import type { AuthenticatedRequest } from "../interfaces/AutenticatedRequest"; 
+import type { AuthenticatedRequest } from "../interfaces/AutenticatedRequest"; // Importación requerida para verificarSesion
 
 declare module "express-session" {
   interface SessionData {
@@ -74,7 +73,7 @@ export class UsuariosController {
   }
   /**
    * POST /usuarios/registrar - Crea un nuevo usuario (Registro).
-   * RESPUESTA MODIFICADA: Ahora devuelve { ok: true, rol: ..., mensaje: ... }
+   * RESPUESTA CONSISTENTE: Ahora devuelve { ok: true, role: ..., mensaje: ... }
    */
 
   async crearUsuario(req: Request, res: Response) {
@@ -83,7 +82,7 @@ export class UsuariosController {
 
     if (!nombre || !email || !password) {
       return res.status(400).json({
-        ok: false, // Añadido 'ok: false' para el error
+        ok: false, 
         mensaje: "Faltan campos requeridos: nombre, email y password.",
       });
     }
@@ -106,7 +105,7 @@ export class UsuariosController {
         {
           id: nuevoUsuario.id,
           email: nuevoUsuario.email,
-          rol: nuevoUsuario.rol,
+          role: nuevoUsuario.rol, // CORREGIDO: Usar 'role' en el payload
         },
         JWT_SECRET,
         {
@@ -118,11 +117,11 @@ export class UsuariosController {
         httpOnly: true,
         secure: isProduction,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite:"none",
+        sameSite: isProduction ? "none" : "lax",
       };
       res.cookie("authToken", token, cookieOptions);
 
-      // *** RESPUESTA MODIFICADA PARA CUMPLIR EL FORMATO SOLICITADO ***
+      // *** RESPUESTA CONSISTENTE: Usamos 'role' ***
       return res.status(201).json({
         ok: true,
         role: nuevoUsuario.rol,
@@ -131,7 +130,7 @@ export class UsuariosController {
     } catch (error: any) {
       if (error.code === "23505") {
         return res.status(409).json({
-          ok: false, // Añadido 'ok: false' para el error
+          ok: false, 
           mensaje: "El email ya está registrado.",
         });
       }
@@ -139,12 +138,12 @@ export class UsuariosController {
       console.error("Error al crear usuario:", error);
       return res
         .status(500)
-        .json({ ok: false, mensaje: "Error interno del servidor" }); // Añadido 'ok: false'
+        .json({ ok: false, mensaje: "Error interno del servidor" }); 
     }
   }
   /**
    * POST /usuarios/login - Inicia sesión.
-   * RESPUESTA MODIFICADA: Ahora devuelve { ok: true, rol: ..., mensaje: ... }
+   * RESPUESTA CONSISTENTE: Ahora devuelve { ok: true, role: ..., mensaje: ... }
    */
 
   public iniciarSesion = async (
@@ -191,7 +190,7 @@ export class UsuariosController {
         // A. Administradores/Operarios: Usan Sesión de Servidor
         req.session.user = userPayload;
 
-        // *** RESPUESTA MODIFICADA PARA CUMPLIR EL FORMATO SOLICITADO ***
+        // *** RESPUESTA CONSISTENTE: Usamos 'role' ***
         return res.status(200).json({
           ok: true,
           role: userPayload.role,
@@ -200,21 +199,21 @@ export class UsuariosController {
       } else {
         // B. Usuarios Estándar: Usan JWT
         const token = jwt.sign(
-          { id: usuario.id, email: usuario.email, rol: usuario.rol },
+          { id: usuario.id, email: usuario.email, role: usuario.rol }, // CORREGIDO: Usar 'role' en el payload
           JWT_SECRET,
           { expiresIn: "24h" }
         );
 
         const cookieOptions: CookieOptions = {
-          httpOnly: true,
+          httpOnly: true, // CLAVE: No visible a JS del frontend
           secure: isProduction,
           maxAge: 24 * 60 * 60 * 1000,
           sameSite: isProduction ? "none" : "lax",
         };
 
-        res.cookie("authToken", token, cookieOptions);
+        res.cookie("authToken", token, cookieOptions); // 🛑 Aquí se "devuelve" el token via cookie
 
-        // *** RESPUESTA MODIFICADA PARA CUMPLIR EL FORMATO SOLICITADO ***
+        // *** RESPUESTA CONSISTENTE: Usamos 'role' ***
         return res.status(200).json({
           ok: true,
           role: userPayload.role,
