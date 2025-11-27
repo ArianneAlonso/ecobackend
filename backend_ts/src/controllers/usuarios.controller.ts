@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import type { JwtPayload, UserRole } from "../interfaces/JwtPayload.js";
 import type { CookieOptions } from "express";
+// IMPORTACIÓN NECESARIA para el método verificarSesion
+import type { AuthenticatedRequest } from "../interfaces/AutenticatedRequest"; 
 
 declare module "express-session" {
   interface SessionData {
@@ -250,5 +252,27 @@ export class UsuariosController {
       console.error("Error al cerrar sesión :", error);
       return res.status(500).json({ ok: false, mensaje: "Error interno del servidor" });
     }
+  }
+
+  /**
+   * GET /usuarios/session - Verifica la sesión actual y devuelve los datos del usuario.
+   *
+   * Utiliza el tipado AuthenticatedRequest que garantiza que req.user ya está disponible.
+   */
+  public verificarSesion(req: AuthenticatedRequest, res: Response) {
+    // Si la solicitud llega aquí, req.user está garantizado por SessionValidator.
+    if (req.user) {
+      return res.status(200).json({
+        ok: true,
+        mensaje: "Usuario autenticado.",
+        user: req.user,
+      });
+    }
+
+    // Esta línea es de fallback, SessionValidator ya debería haber enviado un 401 si no hay usuario.
+    return res.status(401).json({
+        ok: false,
+        mensaje: "Usuario no autenticado."
+    });
   }
 }
