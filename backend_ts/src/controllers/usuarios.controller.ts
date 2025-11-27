@@ -118,14 +118,14 @@ export class UsuariosController {
         httpOnly: true,
         secure: isProduction,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: isProduction ? "none" : "lax",
+        sameSite:"none",
       };
       res.cookie("authToken", token, cookieOptions);
 
       // *** RESPUESTA MODIFICADA PARA CUMPLIR EL FORMATO SOLICITADO ***
       return res.status(201).json({
         ok: true,
-        rol: nuevoUsuario.rol,
+        role: nuevoUsuario.rol,
         mensaje: "Usuario registrado exitosamente",
       });
     } catch (error: any) {
@@ -217,7 +217,7 @@ export class UsuariosController {
         // *** RESPUESTA MODIFICADA PARA CUMPLIR EL FORMATO SOLICITADO ***
         return res.status(200).json({
           ok: true,
-          rol: userPayload.role,
+          role: userPayload.role,
           mensaje: "Inicio de sesión exitoso",
         });
       }
