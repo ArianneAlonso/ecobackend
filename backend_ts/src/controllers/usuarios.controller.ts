@@ -209,6 +209,7 @@ export class UsuariosController {
           secure: isProduction,
           maxAge: 24 * 60 * 60 * 1000,
           sameSite: isProduction ? "none" : "lax",
+          path: "/"
         };
 
         res.cookie("authToken", token, cookieOptions); // 🛑 Aquí se "devuelve" el token via cookie
