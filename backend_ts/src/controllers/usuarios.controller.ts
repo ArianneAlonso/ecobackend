@@ -194,7 +194,7 @@ export class UsuariosController {
         // *** RESPUESTA MODIFICADA PARA CUMPLIR EL FORMATO SOLICITADO ***
         return res.status(200).json({
           ok: true,
-          rol: userPayload.role,
+          role: userPayload.role,
           mensaje: "Inicio de sesión exitoso",
         });
       } else {
