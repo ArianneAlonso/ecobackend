@@ -21,26 +21,26 @@ interface QuickAction {
 const quickActions: QuickAction[] = [
   {
     icon: Truck,
-    title: "Solicitar Retiro",
-    description: "Programa la recolección de tus residuos",
-    route: "Pickup",
+    title: 'Solicitar Retiro',
+    description: 'Programa la recolección de tus residuos',
+    route: 'Pickup',
   },
   {
     icon: QrCode,
-    title: "Escanear QR",
-    description: "Valida tu entrega y suma puntos",
+    title: 'Escanear QR',
+    description: 'Valida tu entrega y suma puntos',
   },
   {
     icon: MapPin,
-    title: "Contenedores",
-    description: "Encuentra el más cercano",
-    route: "Map",
+    title: 'Contenedores',
+    description: 'Encuentra el más cercano',
+    route: 'Map',
   },
   {
     icon: Leaf,
-    title: "Consejos",
-    description: "Aprende a reciclar mejor",
-    route: "Tips",
+    title: 'Consejos',
+    description: 'Aprende a reciclar mejor',
+    route: 'Tips',
   },
 ];
 
@@ -57,12 +57,11 @@ export default function Homepage() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView 
-        style={styles.scrollView} 
+      <ScrollView
+        style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Header con gradiente */}
         <LinearGradient
           colors={['#9ccc65', '#8bc34a']}
           style={styles.header}
@@ -74,11 +73,10 @@ export default function Homepage() {
         </LinearGradient>
 
         <View style={styles.content}>
-          {/* Acciones Rápidas */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
-            <ScrollView 
-              horizontal 
+            <Text style={styles.sectionTitle}>Acciones rápidas</Text>
+            <ScrollView
+              horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.actionsContainer}
             >
@@ -90,7 +88,7 @@ export default function Homepage() {
                   onPress={() => handleActionPress(action)}
                 >
                   <View style={styles.iconContainer}>
-                    <action.icon size={28} color="#9ccc65" />
+                    <action.icon size={28} color="#43a047" />
                   </View>
                   <Text style={styles.actionTitle}>{action.title}</Text>
                   <Text style={styles.actionDescription} numberOfLines={2}>
@@ -101,20 +99,19 @@ export default function Homepage() {
             </ScrollView>
           </View>
 
-          {/* Próxima Recolección */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Próxima Recolección</Text>
+            <Text style={styles.sectionTitle}>Próxima recolección</Text>
             <View style={styles.collectionCard}>
               <View style={styles.collectionHeader}>
                 <View style={styles.collectionInfo}>
                   <View style={styles.collectionRow}>
-                    <Calendar size={18} color="#9ccc65" />
+                    <Calendar size={18} color="#2e7d32" />
                     <Text style={styles.collectionDate}>
                       Viernes, 1 de Noviembre
                     </Text>
                   </View>
                   <View style={styles.collectionRow}>
-                    <Clock size={18} color="#666" />
+                    <Clock size={18} color="#558b2f" />
                     <Text style={styles.collectionTime}>
                       8:00 AM - 12:00 PM
                     </Text>
@@ -131,7 +128,7 @@ export default function Homepage() {
               <View style={styles.materialsSection}>
                 <Text style={styles.materialsLabel}>Materiales:</Text>
                 <View style={styles.materialsContainer}>
-                  {["Plástico", "Vidrio", "Papel"].map((material, index) => (
+                  {['Plástico', 'Vidrio', 'Papel'].map((material, index) => (
                     <View key={index} style={styles.materialChip}>
                       <Text style={styles.materialText}>{material}</Text>
                     </View>
@@ -141,7 +138,7 @@ export default function Homepage() {
 
               <TouchableOpacity style={styles.reminderButton}>
                 <Text style={styles.reminderButtonText}>
-                  Configurar Recordatorio
+                  Configurar recordatorio
                 </Text>
               </TouchableOpacity>
             </View>
@@ -155,7 +152,7 @@ export default function Homepage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f9f1',
   },
   scrollView: {
     flex: 1,
@@ -165,18 +162,20 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 24,
+    paddingTop: 28,
     paddingBottom: 32,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ffffff',
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: 'rgba(255,255,255,0.9)',
   },
   content: {
     paddingTop: 24,
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
     marginBottom: 16,
     paddingHorizontal: 16,
   },
@@ -196,21 +195,24 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   actionCard: {
-    width: 140,
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    width: 150,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
+    marginRight: 12,
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e0f2f1',
   },
   iconContainer: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#f1f8e9',
+    backgroundColor: '#e6f4d7',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
@@ -218,24 +220,26 @@ const styles = StyleSheet.create({
   actionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: '#1b5e20',
     marginBottom: 4,
   },
   actionDescription: {
     fontSize: 12,
-    color: '#666',
+    color: '#546e7a',
     lineHeight: 16,
   },
   collectionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
     padding: 16,
     marginHorizontal: 16,
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e0f2f1',
   },
   collectionHeader: {
     flexDirection: 'row',
@@ -255,15 +259,15 @@ const styles = StyleSheet.create({
   collectionDate: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
   },
   collectionTime: {
     fontSize: 14,
-    color: '#666',
+    color: '#455a64',
   },
   daysUntilBadge: {
     backgroundColor: '#9ccc65',
-    borderRadius: 12,
+    borderRadius: 14,
     paddingVertical: 8,
     paddingHorizontal: 12,
     alignItems: 'center',
@@ -272,12 +276,12 @@ const styles = StyleSheet.create({
   daysUntilNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ffffff',
   },
   daysUntilText: {
     fontSize: 12,
-    color: '#fff',
-    marginTop: -4,
+    color: '#ffffff',
+    marginTop: -2,
   },
   divider: {
     height: 1,
@@ -290,7 +294,7 @@ const styles = StyleSheet.create({
   materialsLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
     marginBottom: 8,
   },
   materialsContainer: {
@@ -299,7 +303,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   materialChip: {
-    backgroundColor: '#f1f8e9',
+    backgroundColor: '#e6f4d7',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 16,
@@ -309,17 +313,18 @@ const styles = StyleSheet.create({
   materialText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#689f38',
+    color: '#33691e',
   },
   reminderButton: {
-    backgroundColor: '#9ccc65',
+    backgroundColor: '#43a047',
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
+    marginTop: 4,
   },
   reminderButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
+    color: '#ffffff',
   },
 });

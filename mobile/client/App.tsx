@@ -13,7 +13,7 @@ import Events from './src/pages/Events';
 import Points from './src/pages/perfil';
 import configuracion from './src/pages/configuracion';
 import PickupRequest from './src/pages/PickupRequest';
-import Tips from './src/pages/Tips';
+import Tips from './src/components/Tips';
 import WelcomeScreen from './src/pages/WelcomeScreen';
 
 const AuthStack = createNativeStackNavigator();

@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Leaf, 
-  Trash2, 
-  Recycle, 
-  Package, 
-  AlertCircle, 
-  Lightbulb, 
+import {
+  Leaf,
+  Trash2,
+  Recycle,
+  Package,
+  AlertCircle,
+  Lightbulb,
   BookOpen,
   ChevronDown,
   ChevronUp,
@@ -23,124 +23,137 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const tips = [
-  "Separa tus residuos desde el origen para facilitar el reciclaje",
-  "Lava los envases antes de reciclarlos",
-  "Reduce el uso de plásticos de un solo uso",
-  "Reutiliza bolsas y contenedores cuando sea posible",
-  "Composta tus residuos orgánicos en casa",
+  'Separa tus residuos desde el origen para facilitar el reciclaje',
+  'Lava los envases antes de reciclarlos',
+  'Reduce el uso de plásticos de un solo uso',
+  'Reutiliza bolsas y contenedores cuando sea posible',
+  'Composta tus residuos orgánicos en casa',
 ];
 
 const wasteTypes = [
   {
-    title: "Residuos Orgánicos",
+    title: 'Residuos Orgánicos',
     icon: Leaf,
-    color: "#16a34a",
-    bgColor: "#dcfce7",
-    description: "Restos de comida, cáscaras, residuos de jardín",
-    examples: ["Frutas y verduras", "Restos de café y té", "Cáscaras de huevo", "Hojas y ramas"],
+    color: '#16a34a',
+    bgColor: '#dcfce7',
+    description: 'Restos de comida, cáscaras, residuos de jardín',
+    examples: [
+      'Frutas y verduras',
+      'Restos de café y té',
+      'Cáscaras de huevo',
+      'Hojas y ramas',
+    ],
   },
   {
-    title: "Residuos Inorgánicos",
+    title: 'Residuos Inorgánicos',
     icon: Package,
-    color: "#2563eb",
-    bgColor: "#dbeafe",
-    description: "Plásticos, vidrio, metales, papel y cartón",
-    examples: ["Botellas plásticas", "Latas de aluminio", "Papel y cartón", "Vidrio"],
+    color: '#2563eb',
+    bgColor: '#dbeafe',
+    description: 'Plásticos, vidrio, metales, papel y cartón',
+    examples: ['Botellas plásticas', 'Latas de aluminio', 'Papel y cartón', 'Vidrio'],
   },
   {
-    title: "Residuos Sanitarios",
+    title: 'Residuos Sanitarios',
     icon: AlertCircle,
-    color: "#dc2626",
-    bgColor: "#fee2e2",
-    description: "Pañales, toallas sanitarias, materiales médicos",
-    examples: ["Pañales desechables", "Toallas sanitarias", "Gasas y vendajes", "Mascarillas usadas"],
+    color: '#dc2626',
+    bgColor: '#fee2e2',
+    description: 'Pañales, toallas sanitarias, materiales médicos',
+    examples: [
+      'Pañales desechables',
+      'Toallas sanitarias',
+      'Gasas y vendajes',
+      'Mascarillas usadas',
+    ],
   },
 ];
 
 const containers = [
   {
-    name: "Contenedor Verde",
-    materials: ["Plástico", "Vidrio", "Papel", "Cartón"],
-    color: "#9ccc65",
+    name: 'Contenedor Verde',
+    materials: ['Plástico', 'Vidrio', 'Papel', 'Cartón'],
+    color: '#9ccc65',
   },
   {
-    name: "Contenedor Marrón",
-    materials: ["Residuos orgánicos", "Restos de comida"],
-    color: "#b45309",
+    name: 'Contenedor Marrón',
+    materials: ['Residuos orgánicos', 'Restos de comida'],
+    color: '#b45309',
   },
   {
-    name: "Contenedor Gris",
-    materials: ["Residuos sanitarios", "No reciclables"],
-    color: "#4b5563",
+    name: 'Contenedor Gris',
+    materials: ['Residuos sanitarios', 'No reciclables'],
+    color: '#4b5563',
   },
 ];
 
 const threeRs = [
   {
-    title: "Reducir",
+    title: 'Reducir',
     icon: Lightbulb,
-    description: "Minimiza la cantidad de residuos que generas",
+    description: 'Minimiza la cantidad de residuos que generas',
     tips: [
-      "Compra productos con menos empaque",
-      "Evita productos desechables",
-      "Planifica tus compras para evitar desperdicios",
-      "Usa bolsas reutilizables",
+      'Compra productos con menos empaque',
+      'Evita productos desechables',
+      'Planifica tus compras para evitar desperdicios',
+      'Usa bolsas reutilizables',
     ],
   },
   {
-    title: "Reutilizar",
+    title: 'Reutilizar',
     icon: Recycle,
-    description: "Dale una segunda vida a los objetos",
+    description: 'Dale una segunda vida a los objetos',
     tips: [
-      "Usa frascos de vidrio para almacenar",
-      "Repara objetos en lugar de desecharlos",
-      "Dona lo que ya no uses",
-      "Convierte ropa vieja en trapos de limpieza",
+      'Usa frascos de vidrio para almacenar',
+      'Repara objetos en lugar de desecharlos',
+      'Dona lo que ya no uses',
+      'Convierte ropa vieja en trapos de limpieza',
     ],
   },
   {
-    title: "Reciclar",
+    title: 'Reciclar',
     icon: Trash2,
-    description: "Transforma los residuos en nuevos productos",
+    description: 'Transforma los residuos en nuevos productos',
     tips: [
-      "Separa correctamente tus residuos",
-      "Limpia los envases antes de reciclar",
-      "Aplasta las botellas para ahorrar espacio",
-      "Consulta qué materiales se reciclan en tu zona",
+      'Separa correctamente tus residuos',
+      'Limpia los envases antes de reciclar',
+      'Aplasta las botellas para ahorrar espacio',
+      'Consulta qué materiales se reciclan en tu zona',
     ],
   },
 ];
 
 const compostSteps = [
   {
-    step: "1",
-    title: "Elige el contenedor",
-    description: "Usa un contenedor con tapa, puede ser comercial o casero, con agujeros para ventilación",
+    step: '1',
+    title: 'Elige el contenedor',
+    description:
+      'Usa un contenedor con tapa, puede ser comercial o casero, con agujeros para ventilación',
   },
   {
-    step: "2",
-    title: "Agrega materiales verdes",
-    description: "Restos de frutas, verduras, café, té y cáscaras de huevo (ricos en nitrógeno)",
+    step: '2',
+    title: 'Agrega materiales verdes',
+    description:
+      'Restos de frutas, verduras, café, té y cáscaras de huevo (ricos en nitrógeno)',
   },
   {
-    step: "3",
-    title: "Agrega materiales marrones",
-    description: "Hojas secas, ramas pequeñas, papel sin tinta (ricos en carbono)",
+    step: '3',
+    title: 'Agrega materiales marrones',
+    description: 'Hojas secas, ramas pequeñas, papel sin tinta (ricos en carbono)',
   },
   {
-    step: "4",
-    title: "Mantén la humedad",
-    description: "El compost debe estar húmedo como una esponja exprimida, no empapado",
+    step: '4',
+    title: 'Mantén la humedad',
+    description:
+      'El compost debe estar húmedo como una esponja exprimida, no empapado',
   },
   {
-    step: "5",
-    title: "Mezcla regularmente",
-    description: "Revuelve cada 1-2 semanas para oxigenar y acelerar la descomposición",
+    step: '5',
+    title: 'Mezcla regularmente',
+    description: 'Revuelve cada 1-2 semanas para oxigenar y acelerar la descomposición',
   },
   {
-    step: "6",
-    title: "Espera y cosecha",
-    description: "En 2-6 meses tendrás compost listo, oscuro y con olor a tierra",
+    step: '6',
+    title: 'Espera y cosecha',
+    description: 'En 2-6 meses tendrás compost listo, oscuro y con olor a tierra',
   },
 ];
 
@@ -154,21 +167,22 @@ export default function Tips() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <ArrowLeft size={24} color="#333" />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <ArrowLeft size={24} color="#2e7d32" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Consejos Ecológicos</Text>
+        <Text style={styles.headerTitle}>Consejos ecológicos</Text>
         <View style={{ width: 24 }} />
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       >
-        {/* Quick Tips Card */}
         <LinearGradient
           colors={['#f1f8e9', '#e8f5e9']}
           style={styles.quickTipsCard}
@@ -177,7 +191,7 @@ export default function Tips() {
             <View style={styles.quickTipsIcon}>
               <Lightbulb size={24} color="#9ccc65" />
             </View>
-            <Text style={styles.quickTipsTitle}>Consejos Rápidos</Text>
+            <Text style={styles.quickTipsTitle}>Consejos rápidos</Text>
           </View>
           {tips.map((tip, index) => (
             <View key={index} style={styles.tipItem}>
@@ -187,11 +201,10 @@ export default function Tips() {
           ))}
         </LinearGradient>
 
-        {/* Waste Types Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Trash2 size={20} color="#333" />
-            <Text style={styles.sectionTitle}>Tipos de Residuos</Text>
+            <Trash2 size={20} color="#2e7d32" />
+            <Text style={styles.sectionTitle}>Tipos de residuos</Text>
           </View>
 
           {wasteTypes.map((type) => {
@@ -199,12 +212,16 @@ export default function Tips() {
             return (
               <View key={type.title} style={styles.wasteCard}>
                 <View style={styles.wasteCardContent}>
-                  <View style={[styles.wasteIcon, { backgroundColor: type.bgColor }]}>
+                  <View
+                    style={[styles.wasteIcon, { backgroundColor: type.bgColor }]}
+                  >
                     <IconComponent size={24} color={type.color} />
                   </View>
                   <View style={styles.wasteInfo}>
                     <Text style={styles.wasteTitle}>{type.title}</Text>
-                    <Text style={styles.wasteDescription}>{type.description}</Text>
+                    <Text style={styles.wasteDescription}>
+                      {type.description}
+                    </Text>
                     <View style={styles.examplesContainer}>
                       {type.examples.map((example) => (
                         <View key={example} style={styles.exampleBadge}>
@@ -219,17 +236,21 @@ export default function Tips() {
           })}
         </View>
 
-        {/* Container Types Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Package size={20} color="#333" />
-            <Text style={styles.sectionTitle}>Tipos de Contenedores</Text>
+            <Package size={20} color="#2e7d32" />
+            <Text style={styles.sectionTitle}>Tipos de contenedores</Text>
           </View>
 
           {containers.map((container) => (
             <View key={container.name} style={styles.containerCard}>
               <View style={styles.containerHeader}>
-                <View style={[styles.containerDot, { backgroundColor: container.color }]} />
+                <View
+                  style={[
+                    styles.containerDot,
+                    { backgroundColor: container.color },
+                  ]}
+                />
                 <Text style={styles.containerName}>{container.name}</Text>
               </View>
               <View style={styles.materialsContainer}>
@@ -243,11 +264,10 @@ export default function Tips() {
           ))}
         </View>
 
-        {/* Three Rs Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Recycle size={20} color="#333" />
-            <Text style={styles.sectionTitle}>Las 3 Rs del Reciclaje</Text>
+            <Recycle size={20} color="#2e7d32" />
+            <Text style={styles.sectionTitle}>Las 3 Rs del reciclaje</Text>
           </View>
 
           {threeRs.map((r, index) => {
@@ -266,7 +286,9 @@ export default function Tips() {
                     </View>
                     <View style={styles.accordionTitleContent}>
                       <Text style={styles.accordionTitle}>{r.title}</Text>
-                      <Text style={styles.accordionDescription}>{r.description}</Text>
+                      <Text style={styles.accordionDescription}>
+                        {r.description}
+                      </Text>
                     </View>
                   </View>
                   {isExpanded ? (
@@ -291,16 +313,16 @@ export default function Tips() {
           })}
         </View>
 
-        {/* Compost Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Leaf size={20} color="#333" />
-            <Text style={styles.sectionTitle}>Cómo Hacer Compost en Casa</Text>
+            <Leaf size={20} color="#2e7d32" />
+            <Text style={styles.sectionTitle}>Cómo hacer compost en casa</Text>
           </View>
 
           <View style={styles.compostCard}>
             <Text style={styles.compostIntro}>
-              El compostaje es una forma natural de reciclar residuos orgánicos y crear abono rico en nutrientes para tus plantas.
+              El compostaje es una forma natural de reciclar residuos orgánicos
+              y crear abono rico en nutrientes para tus plantas.
             </Text>
             {compostSteps.map((item) => (
               <View key={item.step} style={styles.compostStep}>
@@ -309,30 +331,32 @@ export default function Tips() {
                 </View>
                 <View style={styles.stepContent}>
                   <Text style={styles.stepTitle}>{item.title}</Text>
-                  <Text style={styles.stepDescription}>{item.description}</Text>
+                  <Text style={styles.stepDescription}>
+                    {item.description}
+                  </Text>
                 </View>
               </View>
             ))}
           </View>
         </View>
 
-        {/* Environmental Impact Card */}
         <LinearGradient
           colors={['#e8f5e9', '#f1f8e9']}
           style={styles.impactCard}
         >
           <View style={styles.impactHeader}>
             <BookOpen size={24} color="#9ccc65" />
-            <Text style={styles.impactTitle}>Impacto Ambiental</Text>
+            <Text style={styles.impactTitle}>Impacto ambiental</Text>
           </View>
           <Text style={styles.impactIntro}>
-            Reciclar correctamente puede marcar una gran diferencia en nuestro planeta:
+            Reciclar correctamente puede marcar una gran diferencia en nuestro
+            planeta:
           </Text>
           {[
-            "Reduce la contaminación del aire y agua",
-            "Ahorra energía y recursos naturales",
-            "Disminuye los residuos en vertederos",
-            "Ayuda a combatir el cambio climático",
+            'Reduce la contaminación del aire y agua',
+            'Ahorra energía y recursos naturales',
+            'Disminuye los residuos en vertederos',
+            'Ayuda a combatir el cambio climático',
           ].map((item, index) => (
             <View key={index} style={styles.impactItem}>
               <Text style={styles.bullet}>•</Text>
@@ -348,7 +372,7 @@ export default function Tips() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f9f1',
   },
   header: {
     flexDirection: 'row',
@@ -358,6 +382,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    backgroundColor: '#ffffff',
   },
   backButton: {
     padding: 4,
@@ -365,7 +390,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#2e7d32',
   },
   scrollView: {
     flex: 1,
@@ -375,7 +400,7 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   quickTipsCard: {
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
     marginBottom: 24,
   },
@@ -396,7 +421,7 @@ const styles = StyleSheet.create({
   quickTipsTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
   },
   tipItem: {
     flexDirection: 'row',
@@ -412,7 +437,7 @@ const styles = StyleSheet.create({
   tipText: {
     flex: 1,
     fontSize: 14,
-    color: '#333',
+    color: '#37474f',
     lineHeight: 20,
   },
   section: {
@@ -427,16 +452,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
   },
   wasteCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 3,
   },
@@ -457,12 +482,12 @@ const styles = StyleSheet.create({
   wasteTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#263238',
     marginBottom: 4,
   },
   wasteDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#607d8b',
     marginBottom: 8,
   },
   examplesContainer: {
@@ -478,16 +503,16 @@ const styles = StyleSheet.create({
   },
   exampleText: {
     fontSize: 11,
-    color: '#666',
+    color: '#607d8b',
   },
   containerCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 3,
   },
@@ -505,7 +530,7 @@ const styles = StyleSheet.create({
   containerName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#263238',
   },
   materialsContainer: {
     flexDirection: 'row',
@@ -518,13 +543,14 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 12,
+    backgroundColor: '#fafafa',
   },
   materialText: {
     fontSize: 11,
-    color: '#666',
+    color: '#607d8b',
   },
   accordionCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     marginBottom: 8,
     borderWidth: 1,
@@ -557,12 +583,12 @@ const styles = StyleSheet.create({
   accordionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#263238',
     marginBottom: 2,
   },
   accordionDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#607d8b',
   },
   accordionContent: {
     paddingHorizontal: 16,
@@ -576,22 +602,22 @@ const styles = StyleSheet.create({
   accordionTipText: {
     flex: 1,
     fontSize: 13,
-    color: '#333',
+    color: '#37474f',
     lineHeight: 18,
   },
   compostCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 3,
   },
   compostIntro: {
     fontSize: 13,
-    color: '#666',
+    color: '#607d8b',
     marginBottom: 16,
     lineHeight: 18,
   },
@@ -611,7 +637,7 @@ const styles = StyleSheet.create({
   stepNumberText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ffffff',
   },
   stepContent: {
     flex: 1,
@@ -619,12 +645,12 @@ const styles = StyleSheet.create({
   stepTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#263238',
     marginBottom: 4,
   },
   stepDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#607d8b',
     lineHeight: 18,
   },
   impactCard: {
@@ -641,11 +667,11 @@ const styles = StyleSheet.create({
   impactTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#263238',
   },
   impactIntro: {
     fontSize: 13,
-    color: '#666',
+    color: '#607d8b',
     marginBottom: 12,
     lineHeight: 18,
   },
@@ -656,7 +682,7 @@ const styles = StyleSheet.create({
   impactText: {
     flex: 1,
     fontSize: 13,
-    color: '#333',
+    color: '#37474f',
     lineHeight: 18,
   },
 });
