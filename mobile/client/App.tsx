@@ -11,7 +11,7 @@ import Homepage from './src/pages/Home';
 import Map from './src/pages/Map';
 import Events from './src/pages/Events';
 import Points from './src/pages/Points';
-import Profile from './src/pages/Profile';
+import Profile from './src/pages/configuracion';
 import PickupRequest from './src/pages/PickupRequest';
 import Tips from './src/pages/Tips';
 import WelcomeScreen from './src/pages/WelcomeScreen';
@@ -63,11 +63,7 @@ function MainTabs() {
               break;
             case 'PointsTab':
               IconComponent = Award;
-              iconName = 'Estadisticas';
-              break;
-            case 'ProfileTab':
-              IconComponent = User;
-              iconName = 'Perfil';
+              iconName = 'Puntos';
               break;
             default:
               IconComponent = Home;
@@ -96,12 +92,7 @@ function MainTabs() {
       <Tab.Screen
         name="PointsTab"
         component={Points}
-        options={{ tabBarLabel: 'Estadistica' }}
-      />
-      <Tab.Screen
-        name="ProfileTab"
-        component={Profile}
-        options={{ tabBarLabel: 'Perfil' }}
+        options={{ tabBarLabel: 'Puntos' }}
       />
     </Tab.Navigator>
   );
