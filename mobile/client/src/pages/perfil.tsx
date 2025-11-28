@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Award, TrendingUp, History, Settings } from 'lucide-react-native';
+import { Award, TrendingUp, History, Settings, Truck, Calendar } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 
 interface HistoryItem {
@@ -31,8 +31,8 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { label: 'Retiros', value: '12', icon: Award },
-  { label: 'Eventos', value: '4', icon: Award },
+  { label: 'Retiros', value: '12', icon: Truck },
+  { label: 'Eventos', value: '4', icon: Calendar },
   { label: 'Kg reciclados', value: '36', icon: Award },
 ];
 
@@ -95,6 +95,7 @@ export default function Points() {
           <Text style={styles.pointsValue}>
             {currentPoints.toLocaleString()}
           </Text>
+          <Text style={styles.pointsSubtext}>pts disponibles para canjear</Text>
         </View>
 
         {/* Nivel */}
@@ -119,20 +120,6 @@ export default function Points() {
 
         {/* Stats detallados */}
         <View style={styles.profileDetailCard}>
-          <View style={styles.profileHeader}>
-            <View style={styles.avatarBig}>
-              <Text style={styles.avatarText}>E</Text>
-            </View>
-            <View style={styles.profileInfoDetail}>
-              <Text style={styles.userName}>Eco Héroe</Text>
-              <Text style={styles.userEmail}>usuario@ecoresiduos.com</Text>
-              <View style={styles.levelBadgeDetail}>
-                <Award size={14} color="#2e7d32" />
-                <Text style={styles.levelBadgeTextDetail}>{currentLevel}</Text>
-              </View>
-            </View>
-          </View>
-
           <View style={styles.statsGrid}>
             {stats.map((stat) => {
               const IconComponent = stat.icon;
@@ -381,7 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 
-  /* Profile detail + stats */
+  /* Stats card */
   profileDetailCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
@@ -392,54 +379,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 3,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatarBig: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#9ccc65',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  avatarText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  profileInfoDetail: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1b5e20',
-    marginBottom: 4,
-  },
-  userEmail: {
-    fontSize: 14,
-    color: '#558b2f',
-    marginBottom: 8,
-  },
-  levelBadgeDetail: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#e6f4d7',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  levelBadgeTextDetail: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#2e7d32',
   },
   statsGrid: {
     flexDirection: 'row',
