@@ -95,7 +95,6 @@ export default function Points() {
           <Text style={styles.pointsValue}>
             {currentPoints.toLocaleString()}
           </Text>
-          <Text style={styles.pointsSubtext}>pts disponibles para canjear</Text>
         </View>
 
         {/* Nivel */}
@@ -378,7 +377,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#66bb6a',
+    backgroundColor: '#9ccc65',
     borderRadius: 4,
   },
 

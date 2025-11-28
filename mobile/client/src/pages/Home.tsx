@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     color: '#33691e',
   },
   reminderButton: {
-    backgroundColor: '#43a047',
+    backgroundColor: '#9ccc65',
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
