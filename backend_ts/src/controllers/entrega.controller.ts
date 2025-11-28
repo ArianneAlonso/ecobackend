@@ -26,17 +26,34 @@ export class EntregasController {
     res: Response
   ): Promise<void> => {
     const idUsuario = req.user!.id; // El frontend aún debe enviar el nombre del material, pero lo usaremos para buscar el ID
-    const { idContenedor, materialNombre, pesoKg } = req.body;
+    const { 
+      idContenedor, 
+      materialNombre, 
+      pesoKg, 
+      latitud, 
+      longitud 
+    } = req.body;
 
+   // 1. VALIDACIÓN DE DATOS REQUERIDOS
     if (!materialNombre || !pesoKg || pesoKg <= 0) {
       res
         .status(400)
-        .json({ message: "Datos de entrega incompletos o inválidos." });
+        .json({ message: "Datos de entrega incompletos o inválidos (materialNombre, pesoKg)." });
       return;
-    } // 1. OBTENER ID DEL MATERIAL Y TASA DE PUNTOS
+    } 
+    
+    // 2. VALIDACIÓN DE UBICACIÓN (Nuevo: Requerido si no hay Contenedor)
+    // Si no se proporciona un idContenedor, DEBEN proporcionarse latitud y longitud.
+    if (!idContenedor && (!latitud || !longitud)) {
+        res.status(400).json({ 
+          message: "Para registrar una entrega, debe proporcionar un ID de contenedor O las coordenadas (latitud/longitud) del punto de entrega a domicilio." 
+        });
+        return;
+    }
 
+    // 3. OBTENER ID DEL MATERIAL Y TASA DE PUNTOS
     const materialInfo = await this.materialRepository.findOne({
-      where: { nombre: materialNombre }, // Selecciona explícitamente puntosPorKg
+      where: { nombre: materialNombre },
       select: [
         "idMaterial" as keyof MaterialConPuntos,
         "puntosPorKg" as keyof MaterialConPuntos,
@@ -48,7 +65,7 @@ export class EntregasController {
         .status(400)
         .json({ message: `Material '${materialNombre}' no reconocido.` });
       return;
-    } // Se asume que materialInfo.puntosPorKg existe debido al 'select'
+    } 
 
     const tasaPuntos = materialInfo.puntosPorKg || 0;
 
@@ -65,6 +82,7 @@ export class EntregasController {
         .status(400)
         .json({ message: "El peso es insuficiente para ganar puntos." });
       return;
+    
     } // 2. Iniciar Transacción
 
     const queryRunner = AppDataSource.createQueryRunner();
@@ -72,31 +90,36 @@ export class EntregasController {
     await queryRunner.startTransaction();
 
     try {
-      // A. Crear Entrega usando idMaterial
+      // A. Crear Entrega usando idMaterial, idContenedor y COORDENADAS
       const nuevaEntrega = this.entregaRepository.create({
         idUsuario,
         idContenedor: idContenedor || null,
         idMaterial: materialInfo.idMaterial,
         pesoKg,
         puntosGanados,
+        latitud: latitud || null,    // <-- ¡Guardando la latitud!
+        longitud: longitud || null,  // <-- ¡Guardando la longitud!
       });
-      const entregaGuardada = await queryRunner.manager.save(nuevaEntrega); // B. Registrar Puntos
+      const entregaGuardada = await queryRunner.manager.save(nuevaEntrega); 
 
+      // B. Registrar Puntos (sin cambios)
       const nuevoPunto = queryRunner.manager.create(PuntoEcologico, {
         idUsuario,
         tipoTransaccion: TipoTransaccion.ENTREGA,
         puntos: puntosGanados,
         idReferencia: entregaGuardada.idEntrega,
       });
-      await queryRunner.manager.save(nuevoPunto); // C. Actualizar Saldo (se eliminó el 'as any' innecesario)
+      await queryRunner.manager.save(nuevoPunto); 
 
+      // C. Actualizar Saldo (sin cambios)
       await queryRunner.manager.increment(
         Usuario,
         { idUsuario: idUsuario },
         "puntosAcumulados",
         puntosGanados
-      ); // 3. Finalizar Transacción
+      ); 
 
+      // 5. Finalizar Transacción
       await queryRunner.commitTransaction();
 
       res.status(201).json({

@@ -63,6 +63,7 @@ ALTER TABLE ONLY public.usuarios ADD CONSTRAINT usuarios_email_key UNIQUE (email
 -- Tabla: contenedores
 CREATE TABLE public.contenedores (
     id_contenedor integer NOT NULL,
+    direccion character varying(200),
     latitud numeric(9,6) NOT NULL,
     longitud numeric(9,6) NOT NULL,
     materiales_aceptados character varying(255) NOT NULL,
@@ -76,7 +77,8 @@ ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNER TO admin;
 ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNED BY public.contenedores.id_contenedor;
 ALTER TABLE ONLY public.contenedores ALTER COLUMN id_contenedor SET DEFAULT nextval('public.contenedores_id_contenedor_seq'::regclass);
 ALTER TABLE ONLY public.contenedores ADD CONSTRAINT contenedores_pkey PRIMARY KEY (id_contenedor);
-
+ALTER TABLE public.contenedores
+ADD COLUMN nombre_identificador VARCHAR(100) UNIQUE NOT NULL DEFAULT 'Contenedor Genérico';
 -- Tabla: eventos_ambientales
 CREATE TABLE public.eventos_ambientales (
     id_evento integer NOT NULL,
@@ -130,7 +132,9 @@ CREATE SEQUENCE public.entregas_materiales_id_entrega_seq
 ALTER SEQUENCE public.entregas_materiales_id_entrega_seq OWNED BY public.entregas_materiales.id_entrega;
 ALTER TABLE ONLY public.entregas_materiales ALTER COLUMN id_entrega SET DEFAULT nextval('public.entregas_materiales_id_entrega_seq'::regclass);
 ALTER TABLE ONLY public.entregas_materiales ADD CONSTRAINT entregas_materiales_pkey PRIMARY KEY (id_entrega);
-
+ALTER TABLE public.entregas_materiales
+ADD COLUMN latitud NUMERIC(9,6) NULL,
+ADD COLUMN longitud NUMERIC(9,6) NULL;
 -- Tabla: canjes_premios
 CREATE TABLE public.canjes_premios (
     id_canje integer NOT NULL,

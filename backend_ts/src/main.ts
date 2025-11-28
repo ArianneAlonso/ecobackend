@@ -68,7 +68,7 @@ AppDataSource.initialize()
     const server = http.createServer({ maxHeaderSize: 65536 }, app);
     server.listen(3000, () =>
       console.log(
-        "Servidor iniciado en puerto 3000 (Max Header Size aumentado a 64KB)"
+        "Servidor iniciado en puerto 3000"
       )
     );
   })
