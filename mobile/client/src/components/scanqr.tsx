@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,8 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import { Camera as CameraIcon } from 'lucide-react-native';
-import { Camera, CameraView } from 'expo-camera'; 
-import { PermissionStatus } from 'expo-modules-core'; 
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../servicies/api';
 
@@ -18,79 +17,75 @@ interface ScanQRProps {
   description?: string;
 }
 
-export default function ScanQR({ 
-  onScan, 
-  title = "Escanear Código QR/Barra", 
-  description = "Apunta la cámara al código para iniciar el proceso de retiro." 
+export default function ScanQR({
+  onScan,
+  title = 'Escanear Código QR/Barra',
+  description = 'Apunta la cámara al código para iniciar el proceso de retiro.',
 }: ScanQRProps) {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
-  useEffect(() => {
-    const requestCameraPermission = async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync(); 
-      setHasPermission(status === PermissionStatus.GRANTED); 
-    };
-
-    requestCameraPermission();
-  }, []);
-
-  const handleBarCodeScanned = async ({ type, data }: { type: string; data: string; }) => {
+  const handleBarCodeScanned = async ({
+    type,
+    data,
+  }: {
+    type: string;
+    data: string;
+  }) => {
     if (scanned) return;
     setScanned(true);
 
     try {
-      // Obtener el token del usuario
       const userToken = await AsyncStorage.getItem('userToken');
-      
+
       if (!userToken) {
         Alert.alert(
           'Error',
           'No se encontró token de autenticación. Por favor, inicia sesión nuevamente.',
-          [{ text: 'OK', onPress: () => setScanned(false) }]
+          [{ text: 'OK', onPress: () => setScanned(false) }],
         );
         return;
       }
-      
-      // Llamar a la API para escanear el QR
-      const result = await api.scanQRCode(data, userToken);
-      
-      Alert.alert(
-        "¡Éxito!",
-        `${result.message}\nPuntos totales: ${result.newTotalPoints}`,
-        [{ 
-          text: "OK", 
-          onPress: () => onScan(data, result.newTotalPoints) 
-        }]
-      );
+
+      const result = await api.scanQRCode(data);
+
+      Alert.alert('¡Éxito!', `${result.message}\nPuntos totales: ${result.newTotalPoints}`, [
+        {
+          text: 'OK',
+          onPress: () => onScan(data, result.newTotalPoints),
+        },
+      ]);
     } catch (error: any) {
       console.error('Error al escanear QR:', error);
-      const msg = error.response?.data?.message || "Error al procesar el código";
-      Alert.alert(
-        "Error", 
-        msg, 
-        [{ 
-          text: "Reintentar", 
-          onPress: () => setScanned(false) 
-        }]
-      );
+      const msg = error.response?.data?.message || 'Error al procesar el código';
+      Alert.alert('Error', msg, [
+        {
+          text: 'Reintentar',
+          onPress: () => setScanned(false),
+        },
+      ]);
     }
   };
 
-  if (hasPermission === null) {
+  if (!permission) {
+    // todavía no se cargó el estado de permisos
     return (
       <View style={styles.container}>
         <Text style={styles.permissionText}>Solicitando permiso de cámara...</Text>
       </View>
     );
   }
-  
-  if (hasPermission === false) {
+
+  if (!permission.granted) {
     return (
       <View style={styles.container}>
         <Text style={styles.permissionText}>
           Acceso a la cámara denegado. Por favor, habilítalo en la configuración de tu dispositivo.
         </Text>
+
+        <TouchableOpacity style={styles.rescanButton} onPress={requestPermission}>
+          <Text style={styles.rescanText}>Conceder permiso</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -99,9 +94,9 @@ export default function ScanQR({
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
-      
+
       <View style={styles.scannerContainer}>
-        <CameraView 
+        <CameraView
           onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
           barcodeScannerSettings={{
             barcodeTypes: ['qr', 'ean13', 'code128', 'datamatrix', 'pdf417'],
@@ -113,10 +108,10 @@ export default function ScanQR({
         <View style={styles.scanningFrame}>
           <CameraIcon size={50} color="#fff" />
         </View>
-        
+
         {scanned && (
-          <TouchableOpacity 
-            style={styles.rescanButton} 
+          <TouchableOpacity
+            style={styles.rescanButton}
             onPress={() => setScanned(false)}
           >
             <Text style={styles.rescanText}>Escanear de nuevo</Text>
@@ -162,8 +157,8 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    borderColor: 'rgba(156, 204, 101, 0.5)', 
-    borderWidth: 50, 
+    borderColor: 'rgba(156, 204, 101, 0.5)',
+    borderWidth: 50,
   },
   scanningFrame: {
     position: 'absolute',
@@ -175,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 4,
     borderColor: '#9ccc65',
-    margin: 45, 
+    margin: 45,
     borderRadius: 8,
   },
   rescanButton: {
@@ -190,5 +185,5 @@ const styles = StyleSheet.create({
   rescanText: {
     color: '#fff',
     fontWeight: 'bold',
-  }
+  },
 });

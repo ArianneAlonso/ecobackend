@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, MapPin, Calendar, Award, User } from 'lucide-react-native';
+import { Home, MapPin, Calendar, Award } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LoginRegisterScreen from './src/pages/LoginRegisterScreen';
@@ -11,6 +11,7 @@ import Homepage from './src/pages/Home';
 import Map from './src/pages/Map';
 import Events from './src/pages/Events';
 import Points from './src/pages/perfil';
+import configuracion from './src/pages/configuracion';
 import PickupRequest from './src/pages/PickupRequest';
 import Tips from './src/pages/Tips';
 import WelcomeScreen from './src/pages/WelcomeScreen';
@@ -20,7 +21,7 @@ function AuthNavigator() {
   return (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
       <AuthStack.Screen name="Welcome" component={WelcomeScreen} />
-      <AuthStack.Screen name="Login" component={LoginRegisterScreen} /> 
+      <AuthStack.Screen name="Login" component={LoginRegisterScreen} />
     </AuthStack.Navigator>
   );
 }
@@ -45,31 +46,30 @@ function MainTabs() {
         },
         tabBarIcon: ({ focused, size }) => {
           let IconComponent;
-          let iconName;
 
           switch (route.name) {
             case 'HomeTab':
               IconComponent = Home;
-              iconName = 'Inicio';
               break;
             case 'MapTab':
               IconComponent = MapPin;
-              iconName = 'Mapa';
               break;
             case 'EventsTab':
               IconComponent = Calendar;
-              iconName = 'Eventos';
               break;
             case 'PointsTab':
               IconComponent = Award;
-              iconName = 'Perfil';
               break;
             default:
               IconComponent = Home;
-              iconName = 'Inicio';
           }
 
-          return <IconComponent size={size} color={focused ? '#9ccc65' : '#666'} />;
+          return (
+            <IconComponent
+              size={size}
+              color={focused ? '#9ccc65' : '#666'}
+            />
+          );
         },
       })}
     >
@@ -101,23 +101,18 @@ const RootStack = createNativeStackNavigator();
 function RootNavigator() {
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
-      <RootStack.Screen name="Main" component={MainTabs} /> 
-      <RootStack.Screen 
-        name="Pickup" 
+      <RootStack.Screen name="Main" component={MainTabs} />
+      <RootStack.Screen
+        name="Pickup"
         component={PickupRequest}
         options={{
           presentation: 'modal',
           animation: 'slide_from_bottom',
         }}
       />
-      <RootStack.Screen 
-        name="Tips" 
-        component={Tips}
-      />
-      <RootStack.Screen 
-        name="ConductorHome" 
-        component={Homepage}
-      /> 
+      <RootStack.Screen name="Tips" component={Tips} />
+      <RootStack.Screen name="ConductorHome" component={Homepage} />
+      <RootStack.Screen name="Configuracion" component={configuracion} />
     </RootStack.Navigator>
   );
 }
@@ -132,14 +127,15 @@ export default function App() {
   const checkAuthStatus = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      setIsAuthenticated(!!token); 
+      setIsAuthenticated(!!token);
     } catch (error) {
       console.error('Error checking auth status:', error);
       setIsAuthenticated(false);
     }
   };
+
   if (isAuthenticated === null) {
-    return null; 
+    return null;
   }
 
   return (

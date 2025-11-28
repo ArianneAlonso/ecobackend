@@ -15,9 +15,11 @@ function getBaseURL(port: number): string {
     console.log(`📡 IP detectada automáticamente: ${baseUrl}`);
     return baseUrl;
   }
-  const FALLBACK_IP = '192.168.1.100'; // Cambia esto a tu IP
+  const FALLBACK_IP = '192.168.1.100'; // Cambia esto a tu IP local
   const fallbackUrl = `http://${FALLBACK_IP}:${port}`;
-  console.warn(`⚠️ No se pudo detectar IP automáticamente, usando fallback: ${fallbackUrl}`);
+  console.warn(
+    `⚠️ No se pudo detectar IP automáticamente, usando fallback: ${fallbackUrl}`
+  );
   return fallbackUrl;
 }
 
@@ -41,13 +43,20 @@ api.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('userToken');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Si headers es AxiosHeaders, usamos set; si es objeto plano, extendemos
+      const headers = config.headers as any;
+      if (headers && typeof headers.set === 'function') {
+        headers.set('Authorization', `Bearer ${token}`);
+      } else {
+        config.headers = {
+          ...(config.headers || {}),
+          Authorization: `Bearer ${token}`,
+        } as any;
+      }
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // ============================================
@@ -86,7 +95,9 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
   return response.data;
 };
 
-export const register = async (data: RegisterData): Promise<{ message: string }> => {
+export const register = async (
+  data: RegisterData
+): Promise<{ message: string }> => {
   const response = await api.post('/auth/register', data);
   return response.data;
 };
@@ -109,7 +120,9 @@ export const updateProfile = async (data: any): Promise<any> => {
 // FUNCIONES DE CÓDIGOS QR
 // ============================================
 
-export const scanQRCode = async (code: string): Promise<{ message: string; newTotalPoints: number }> => {
+export const scanQRCode = async (
+  code: string
+): Promise<{ message: string; newTotalPoints: number }> => {
   const response = await api.post('/qrcodes/scan', { code });
   return response.data;
 };
@@ -132,7 +145,9 @@ export const getContainers = async (): Promise<any> => {
 // FUNCIONES DE CLASIFICACIÓN DE RESIDUOS
 // ============================================
 
-export const classifyResidue = async (imageUri: string): Promise<{ materials: string[] }> => {
+export const classifyResidue = async (
+  imageUri: string
+): Promise<{ materials: string[] }> => {
   const formData = new FormData();
   const uriParts = imageUri.split('/');
   const fileName = uriParts[uriParts.length - 1];
@@ -146,11 +161,10 @@ export const classifyResidue = async (imageUri: string): Promise<{ materials: st
     name: fileName,
   } as any);
 
-  // Ajusta '/images/upload-image' si tu endpoint es diferente
   const response = await api.post('/images/upload-image', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
-  return response.data; // Espera { materials: [...] }
+  return response.data;
 };
 
 // ============================================
@@ -165,5 +179,5 @@ export default {
   scanQRCode,
   generateQRCode,
   getContainers,
-  classifyResidue
+  classifyResidue,
 };

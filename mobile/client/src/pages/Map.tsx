@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MapPin, Search, Filter, Navigation, Clock } from 'lucide-react-native';
@@ -25,43 +24,45 @@ interface Container {
 
 const containers: Container[] = [
   {
-    id: "1",
-    type: "Contenedor Verde",
-    address: "Av. Principal 123",
-    materials: ["Plástico", "Vidrio", "Papel"],
-    distance: "0.5 km",
-    schedule: "Lun - Vie: 7:00 AM - 6:00 PM",
+    id: '1',
+    type: 'Contenedor Verde',
+    address: 'Av. Principal 123',
+    materials: ['Plástico', 'Vidrio', 'Papel'],
+    distance: '0.5 km',
+    schedule: 'Lun - Vie: 7:00 AM - 6:00 PM',
     latitude: -26.1855,
     longitude: -58.1755,
   },
   {
-    id: "2",
-    type: "Punto Ecológico",
-    address: "Plaza Central",
-    materials: ["Electrónicos", "Baterías"],
-    distance: "1.2 km",
-    schedule: "Mar y Jue: 9:00 AM - 5:00 PM",
+    id: '2',
+    type: 'Punto Ecológico',
+    address: 'Plaza Central',
+    materials: ['Electrónicos', 'Baterías'],
+    distance: '1.2 km',
+    schedule: 'Mar y Jue: 9:00 AM - 5:00 PM',
     latitude: -26.1875,
     longitude: -58.1735,
   },
   {
-    id: "3",
-    type: "Contenedor Azul",
-    address: "Calle Secundaria 456",
-    materials: ["Papel", "Cartón"],
-    distance: "0.8 km",
-    schedule: "Lun - Sáb: 8:00 AM - 8:00 PM",
+    id: '3',
+    type: 'Contenedor Azul',
+    address: 'Calle Secundaria 456',
+    materials: ['Papel', 'Cartón'],
+    distance: '0.8 km',
+    schedule: 'Lun - Sáb: 8:00 AM - 8:00 PM',
     latitude: -26.1865,
     longitude: -58.1765,
   },
 ];
 
-const filterOptions = ["Todos", "Plástico", "Vidrio", "Papel", "Electrónicos"];
+const filterOptions = ['Todos', 'Plástico', 'Vidrio', 'Papel', 'Electrónicos'];
 
 export default function Map() {
   const [searchText, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todos');
-  const [selectedContainer, setSelectedContainer] = useState<string | null>(null);
+  const [selectedContainer, setSelectedContainer] = useState<string | null>(
+    null
+  );
 
   const handleFilterPress = (filter: string) => {
     setSelectedFilter(filter);
@@ -69,36 +70,38 @@ export default function Map() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mapa de Contenedores</Text>
+        <View>
+          <Text style={styles.headerTitle}>Mapa de contenedores</Text>
+          <Text style={styles.headerSubtitle}>
+            Encuentra los puntos verdes más cercanos
+          </Text>
+        </View>
         <TouchableOpacity style={styles.filterButton}>
-          <Filter size={24} color="#333" />
+          <Filter size={22} color="#1b5e20" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
-        style={styles.scrollView} 
+      <ScrollView
+        style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Search Bar */}
         <View style={styles.searchContainer}>
           <View style={styles.searchInputWrapper}>
-            <Search size={20} color="#999" style={styles.searchIcon} />
+            <Search size={20} color="#78909c" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Buscar por dirección..."
-              placeholderTextColor="#999"
+              placeholder="Buscar por dirección o tipo..."
+              placeholderTextColor="#90a4ae"
               value={searchText}
               onChangeText={setSearchText}
             />
           </View>
         </View>
 
-        {/* Filters */}
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.filtersContainer}
         >
@@ -107,21 +110,22 @@ export default function Map() {
               key={index}
               style={[
                 styles.filterChip,
-                selectedFilter === filter && styles.filterChipActive
+                selectedFilter === filter && styles.filterChipActive,
               ]}
               onPress={() => handleFilterPress(filter)}
             >
-              <Text style={[
-                styles.filterChipText,
-                selectedFilter === filter && styles.filterChipTextActive
-              ]}>
+              <Text
+                style={[
+                  styles.filterChipText,
+                  selectedFilter === filter && styles.filterChipTextActive,
+                ]}
+              >
                 {filter}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
-        {/* Map */}
         <View style={styles.mapContainer}>
           <MapView
             style={styles.map}
@@ -154,27 +158,29 @@ export default function Map() {
           </MapView>
         </View>
 
-        {/* Containers List */}
         <View style={styles.containersSection}>
-          <Text style={styles.sectionTitle}>Contenedores Cercanos</Text>
-          
+          <Text style={styles.sectionTitle}>Contenedores cercanos</Text>
+
           {containers.map((container) => (
             <TouchableOpacity
               key={container.id}
               style={[
                 styles.containerCard,
-                selectedContainer === container.id && styles.containerCardSelected
+                selectedContainer === container.id &&
+                  styles.containerCardSelected,
               ]}
               activeOpacity={0.7}
               onPress={() => setSelectedContainer(container.id)}
             >
               <View style={styles.containerHeader}>
                 <View style={styles.containerIcon}>
-                  <MapPin size={24} color="#9ccc65" />
+                  <MapPin size={22} color="#43a047" />
                 </View>
                 <View style={styles.containerInfo}>
                   <Text style={styles.containerType}>{container.type}</Text>
-                  <Text style={styles.containerAddress}>{container.address}</Text>
+                  <Text style={styles.containerAddress}>
+                    {container.address}
+                  </Text>
                 </View>
                 <View style={styles.distanceBadge}>
                   <Text style={styles.distanceText}>{container.distance}</Text>
@@ -183,7 +189,7 @@ export default function Map() {
 
               <View style={styles.containerDetails}>
                 <View style={styles.scheduleRow}>
-                  <Clock size={16} color="#666" />
+                  <Clock size={16} color="#558b2f" />
                   <Text style={styles.scheduleText}>{container.schedule}</Text>
                 </View>
 
@@ -200,7 +206,7 @@ export default function Map() {
               </View>
 
               <TouchableOpacity style={styles.directionsButton}>
-                <Navigation size={16} color="#9ccc65" />
+                <Navigation size={16} color="#2e7d32" />
                 <Text style={styles.directionsButtonText}>Cómo llegar</Text>
               </TouchableOpacity>
             </TouchableOpacity>
@@ -214,24 +220,32 @@ export default function Map() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f9f1',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: '#9ccc65',
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#ffffff',
+  },
+  headerSubtitle: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 2,
   },
   filterButton: {
     padding: 8,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20,
   },
   scrollView: {
     flex: 1,
@@ -247,18 +261,18 @@ const styles = StyleSheet.create({
   searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
+    backgroundColor: '#e8f2dd',
+    borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   searchIcon: {
     marginRight: 8,
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
-    color: '#333',
+    fontSize: 15,
+    color: '#1b5e20',
   },
   filtersContainer: {
     paddingHorizontal: 16,
@@ -269,9 +283,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f1f8e9',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#c5e1a5',
     marginRight: 8,
   },
   filterChipActive: {
@@ -279,20 +293,22 @@ const styles = StyleSheet.create({
     borderColor: '#9ccc65',
   },
   filterChipText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
-    color: '#666',
+    color: '#33691e',
   },
   filterChipTextActive: {
-    color: '#fff',
+    color: '#ffffff',
   },
   mapContainer: {
-    height: 250,
+    height: 260,
     marginHorizontal: 16,
     marginBottom: 24,
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e8f5e9',
+    borderWidth: 1,
+    borderColor: '#c5e1a5',
   },
   map: {
     flex: 1,
@@ -307,24 +323,25 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
     marginBottom: 16,
   },
   containerCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
     padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
+    marginBottom: 14,
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 3,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#e0f2f1',
   },
   containerCardSelected: {
     borderColor: '#9ccc65',
+    shadowOpacity: 0.16,
   },
   containerHeader: {
     flexDirection: 'row',
@@ -332,10 +349,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   containerIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#f1f8e9',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#e6f4d7',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -346,26 +363,26 @@ const styles = StyleSheet.create({
   containerType: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
+    color: '#1b5e20',
+    marginBottom: 2,
   },
   containerAddress: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 13,
+    color: '#546e7a',
   },
   distanceBadge: {
     backgroundColor: '#f1f8e9',
     paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    borderRadius: 14,
   },
   distanceText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#689f38',
+    color: '#558b2f',
   },
   containerDetails: {
-    gap: 12,
+    gap: 10,
     marginBottom: 12,
   },
   scheduleRow: {
@@ -375,15 +392,15 @@ const styles = StyleSheet.create({
   },
   scheduleText: {
     fontSize: 13,
-    color: '#666',
+    color: '#455a64',
   },
   materialsRow: {
-    gap: 8,
+    gap: 6,
   },
   materialsLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#333',
+    color: '#2e7d32',
   },
   materialsChips: {
     flexDirection: 'row',
@@ -391,7 +408,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   materialChip: {
-    backgroundColor: '#f1f8e9',
+    backgroundColor: '#e6f4d7',
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 12,
@@ -401,20 +418,20 @@ const styles = StyleSheet.create({
   materialText: {
     fontSize: 11,
     fontWeight: '500',
-    color: '#689f38',
+    color: '#33691e',
   },
   directionsButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#f1f8e9',
+    backgroundColor: '#e6f4d7',
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 10,
   },
   directionsButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#689f38',
+    color: '#2e7d32',
   },
 });

@@ -40,7 +40,7 @@ const menuItems: MenuItem[] = [
   { icon: HelpCircle, label: 'Ayuda y Soporte', description: 'Centro de ayuda' },
 ];
 
-export default function Profile() {
+export default function configuracion() {
   const navigation = useNavigation<any>();
 
   const [loading, setLoading] = useState(true);
@@ -148,7 +148,7 @@ export default function Profile() {
       <SafeAreaView style={styles.container}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#9ccc65" />
-          <Text>Cargando perfil...</Text>
+          <Text>Cargando configuración...</Text>
         </View>
       </SafeAreaView>
     );
@@ -156,63 +156,12 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mi Perfil</Text>
-      </View>
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       >
-        {/* Points Card */}
-        <View style={styles.pointsCard}>
-          <View style={styles.pointsHeader}>
-            <Text style={styles.pointsLabel}>Puntos Disponibles</Text>
-            <View style={styles.changeContainer}>
-              <Text style={styles.changeText}>+{pointsChange}</Text>
-              <Text style={styles.changeLabel}>esta semana</Text>
-            </View>
-          </View>
-          <Text style={styles.pointsValue}>{currentPoints.toLocaleString()}</Text>
-          <Text style={styles.pointsSubtext}>pts</Text>
-        </View>
-
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.profileHeader}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {userName ? userName.charAt(0).toUpperCase() : 'U'}
-              </Text>
-            </View>
-            <View style={styles.profileInfo}>
-              <Text style={styles.userName}>{userName}</Text>
-              <Text style={styles.userEmail}>{userEmail}</Text>
-              <View style={styles.levelBadge}>
-                <Award size={14} color="#666" />
-                <Text style={styles.levelBadgeText}>{userLevel}</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Stats Grid */}
-          <View style={styles.statsGrid}>
-            {stats.map((stat) => {
-              const IconComponent = stat.icon;
-              return (
-                <View key={stat.label} style={styles.statItem}>
-                  <View style={styles.statIconContainer}>
-                    <IconComponent size={24} color="#9ccc65" />
-                  </View>
-                  <Text style={styles.statValue}>{stat.value}</Text>
-                  <Text style={styles.statLabel}>{stat.label}</Text>
-                </View>
-              );
-            })}
-          </View>
-        </View>
 
         {/* Settings Section */}
         <View style={styles.section}>
