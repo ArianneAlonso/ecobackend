@@ -8,7 +8,8 @@ import {
   Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Award, TrendingUp, History } from 'lucide-react-native';
+import { Award, TrendingUp, History, Settings } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 interface HistoryItem {
   date: string;
@@ -24,19 +25,27 @@ const history: HistoryItem[] = [
 ];
 
 export default function Points() {
+  const navigation = useNavigation<any>();
+
   const currentPoints = 1250;
   const pointsChange = 85;
   const currentLevel = 'Eco Warrior';
   const pointsToNextLevel = 750;
   const levelProgress = 62; // porcentaje
 
+  const goToConfig = () => {
+    navigation.navigate('Config'); // mismo name que pusiste en el Stack
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mis EcoPuntos</Text>
-        <TouchableOpacity>
-          <Text style={styles.headerAction}>Historial</Text>
+        <Text style={styles.headerTitle}>Mi Perfil</Text>
+
+        {/* Engranaje en la esquina */}
+        <TouchableOpacity onPress={goToConfig} style={styles.headerIconButton}>
+          <Settings size={22} color="#ff6f91" />
         </TouchableOpacity>
       </View>
 
@@ -178,6 +187,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#ff6f91',
   },
+  headerIconButton: {
+    padding: 4,
+  },
   scrollView: {
     flex: 1,
   },
@@ -185,7 +197,6 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 80,
   },
-
   /* Profile */
   profileCard: {
     flexDirection: 'row',
@@ -232,7 +243,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
   },
-
   /* Points card */
   pointsCard: {
     backgroundColor: '#ff6f91',
@@ -282,7 +292,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
   },
-
   /* Level */
   levelCard: {
     backgroundColor: '#fff',
@@ -333,7 +342,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff6f91',
     borderRadius: 4,
   },
-
   /* Sections */
   section: {
     marginBottom: 24,
@@ -354,7 +362,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-
   /* Ranking */
   rankingCard: {
     backgroundColor: '#fff',
@@ -405,7 +412,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#ff6f91',
   },
-
   /* History */
   historyCard: {
     backgroundColor: '#fff',

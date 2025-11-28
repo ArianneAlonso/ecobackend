@@ -10,8 +10,7 @@ import LoginRegisterScreen from './src/pages/LoginRegisterScreen';
 import Homepage from './src/pages/Home';
 import Map from './src/pages/Map';
 import Events from './src/pages/Events';
-import Points from './src/pages/Points';
-import Profile from './src/pages/configuracion';
+import Points from './src/pages/perfil';
 import PickupRequest from './src/pages/PickupRequest';
 import Tips from './src/pages/Tips';
 import WelcomeScreen from './src/pages/WelcomeScreen';
@@ -63,7 +62,7 @@ function MainTabs() {
               break;
             case 'PointsTab':
               IconComponent = Award;
-              iconName = 'Puntos';
+              iconName = 'Perfil';
               break;
             default:
               IconComponent = Home;
@@ -92,7 +91,7 @@ function MainTabs() {
       <Tab.Screen
         name="PointsTab"
         component={Points}
-        options={{ tabBarLabel: 'Puntos' }}
+        options={{ tabBarLabel: 'Perfil' }}
       />
     </Tab.Navigator>
   );
