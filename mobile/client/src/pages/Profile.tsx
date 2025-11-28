@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -34,32 +35,90 @@ interface Stat {
 }
 
 const menuItems: MenuItem[] = [
-  { icon: MapPin, label: "Mi Ubicación", description: "Av. Principal 123" },
-  { icon: Bell, label: "Notificaciones", description: "Activas" },
-  { icon: HelpCircle, label: "Ayuda y Soporte", description: "Centro de ayuda" },
-];
-
-const stats: Stat[] = [
-  { label: "Retiros", value: "12", icon: Leaf },
-  { label: "Eventos", value: "5", icon: Award },
-  { label: "Kg Reciclados", value: "48", icon: Leaf },
+  { icon: MapPin, label: 'Mi Ubicación', description: 'Av. Principal 123' },
+  { icon: Bell, label: 'Notificaciones', description: 'Activas' },
+  { icon: HelpCircle, label: 'Ayuda y Soporte', description: 'Centro de ayuda' },
 ];
 
 export default function Profile() {
   const navigation = useNavigation<any>();
-  const currentPoints = 1250;
-  const pointsChange = 85;
-  const userLevel = "Eco Warrior";
+
+  const [loading, setLoading] = useState(true);
+  const [currentPoints, setCurrentPoints] = useState(0);
+  const [pointsChange, setPointsChange] = useState(0);
+  const [userLevel, setUserLevel] = useState('');
+  const [userName, setUserName] = useState('Usuario EcoResiduos');
+  const [userEmail, setUserEmail] = useState('usuario@email.com');
+  const [stats, setStats] = useState<Stat[]>([
+    { label: 'Retiros', value: '0', icon: Leaf },
+    { label: 'Eventos', value: '0', icon: Award },
+    { label: 'Kg Reciclados', value: '0', icon: Leaf },
+  ]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        if (!token) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'LoginRegister' }],
+          });
+          return;
+        }
+
+        const response = await fetch('http://10.254.197.199:3000/api/auth/profile', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.removeItem('userRole');
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'LoginRegister' }],
+            });
+            return;
+          }
+          throw new Error('Error al obtener perfil');
+        }
+
+        const data = await response.json();
+
+        // Ajusta estos campos a lo que devuelve tu User en getUserProfile
+        setUserName(data.username);
+        setUserEmail(data.email);
+        setCurrentPoints(data.points ?? 0);
+        setPointsChange(data.pointsChange ?? 0);
+        setUserLevel(data.level ?? 'Eco Warrior');
+
+        setStats([
+          { label: 'Retiros', value: String(data.retiros ?? 0), icon: Leaf },
+          { label: 'Eventos', value: String(data.eventos ?? 0), icon: Award },
+          { label: 'Kg Reciclados', value: String(data.kgReciclados ?? 0), icon: Leaf },
+        ]);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'No se pudo cargar el perfil');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigation]);
 
   const handleLogout = () => {
     Alert.alert(
       'Cerrar Sesión',
       '¿Estás seguro de que quieres cerrar sesión?',
       [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
+        { text: 'Cancelar', style: 'cancel' },
         {
           text: 'Cerrar Sesión',
           style: 'destructive',
@@ -84,6 +143,17 @@ export default function Profile() {
     Alert.alert('Próximamente', `Función "${label}" en desarrollo`);
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#9ccc65" />
+          <Text>Cargando perfil...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -91,7 +161,7 @@ export default function Profile() {
         <Text style={styles.headerTitle}>Mi Perfil</Text>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
@@ -113,11 +183,13 @@ export default function Profile() {
         <View style={styles.profileCard}>
           <View style={styles.profileHeader}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>U</Text>
+              <Text style={styles.avatarText}>
+                {userName ? userName.charAt(0).toUpperCase() : 'U'}
+              </Text>
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.userName}>Usuario EcoResiduos</Text>
-              <Text style={styles.userEmail}>usuario@email.com</Text>
+              <Text style={styles.userName}>{userName}</Text>
+              <Text style={styles.userEmail}>{userEmail}</Text>
               <View style={styles.levelBadge}>
                 <Award size={14} color="#666" />
                 <Text style={styles.levelBadgeText}>{userLevel}</Text>
@@ -145,7 +217,7 @@ export default function Profile() {
         {/* Settings Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Configuración</Text>
-          
+
           <View style={styles.menuCard}>
             {menuItems.map((item, index) => {
               const IconComponent = item.icon;
@@ -154,7 +226,7 @@ export default function Profile() {
                   key={item.label}
                   style={[
                     styles.menuItem,
-                    index !== menuItems.length - 1 && styles.menuItemBorder
+                    index !== menuItems.length - 1 && styles.menuItemBorder,
                   ]}
                   onPress={() => handleMenuItemPress(item.label)}
                   activeOpacity={0.7}
