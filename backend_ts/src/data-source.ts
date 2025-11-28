@@ -8,6 +8,9 @@ import { Contenedor } from './entidades/Contenedor';
 import { EntregaMaterial } from './entidades/EntregaMaterial';
 import { PuntoEcologico } from './entidades/PuntoEcologico';
 import { Material } from './entidades/Material';
+import { EventoAmbiental } from './entidades/EventosAmbientales';
+import { Premio } from './entidades/Premios';
+
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -25,6 +28,8 @@ export const AppDataSource = new DataSource({
     Contenedor,
     EntregaMaterial,
     PuntoEcologico,
-    Material
+    Material,
+    EventoAmbiental,
+    Premio
   ],
 });
