@@ -6,7 +6,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
-
 AppDataSource.initialize().then(() => {
   const app = express();
   app.use(express.json());
@@ -15,4 +14,6 @@ AppDataSource.initialize().then(() => {
   app.use(morgan('dev'));
   app.use('/usuarios', usuarioRoutes);
   app.listen(3000, () => console.log('Servidor iniciado en puerto 3000'));
+}).catch((error) => {
+  console.error('Error al inicializar la base de datos', error);
 });
