@@ -1,5 +1,3 @@
-// src/entidades/EntregaMaterial.ts
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -15,23 +13,21 @@ import { Material } from "./Material";
 @Entity("entregas_materiales")
 export class EntregaMaterial {
   @PrimaryGeneratedColumn({ type: "int", name: "id_entrega" })
-  idEntrega!: number;
+  idEntrega!: number; // Relación N:1 con Usuario
 
-  // Relación N:1 con Usuario
   @Column({ name: "id_usuario", type: "int" })
   idUsuario!: number;
 
   @ManyToOne(() => Usuario)
   @JoinColumn({ name: "id_usuario" })
-  usuario!: Usuario;
+  usuario!: Usuario; // Relación N:1 con Contenedor
 
-  // Relación N:1 con Contenedor
   @Column({ name: "id_contenedor", type: "int", nullable: true })
-  idContenedor!: number | null;
+  idContenedor?: number | null; // <-- **CORRECCIÓN: Se añadió '?'**
 
   @ManyToOne(() => Contenedor, { nullable: true })
   @JoinColumn({ name: "id_contenedor" })
-  contenedor!: Contenedor;
+  contenedor?: Contenedor; // <-- **CORRECCIÓN: Se añadió '?'**
 
   @Column({ name: "id_material", type: "int" })
   idMaterial!: number;
@@ -50,8 +46,8 @@ export class EntregaMaterial {
   fechaEntrega!: Date;
 
   @Column({ type: "numeric", precision: 9, scale: 6, nullable: true })
-  latitud!: number; // Nuevo campo
+  latitud?: number; // <-- **CORRECCIÓN: Se añadió '?'**
 
   @Column({ type: "numeric", precision: 9, scale: 6, nullable: true })
-  longitud!: number; // Nuevo campo
+  longitud?: number; // <-- **CORRECCIÓN: Se añadió '?'**
 }
