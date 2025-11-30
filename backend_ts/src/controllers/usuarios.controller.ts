@@ -61,7 +61,7 @@ export class UsuariosController {
     }
 
     try {
-      const usuario = await usuarioRepository.findOneBy({ id });
+      const usuario = await usuarioRepository.findOneBy({ idUsuario: id });
       if (!usuario) {
         return res.status(404).json({ mensaje: "Usuario no encontrado" });
       }
@@ -103,7 +103,7 @@ export class UsuariosController {
       // Generar JWT (flujo de registro)
       const token = jwt.sign(
         {
-          id: nuevoUsuario.id,
+          id: nuevoUsuario.idUsuario,
           email: nuevoUsuario.email,
           role: nuevoUsuario.rol, // CORREGIDO: Usar 'role' en el payload
         },
@@ -161,7 +161,7 @@ export class UsuariosController {
     try {
       const usuario = await usuarioRepository.findOne({
         where: { email },
-        select: ["id", "nombre", "email", "password", "rol"],
+        select: ["idUsuario", "nombre", "email", "password", "rol"],
       });
 
       if (!usuario) {
@@ -179,7 +179,7 @@ export class UsuariosController {
       }
 
       const userPayload: JwtPayload = {
-        id: usuario.id,
+        id: usuario.idUsuario,
         email: usuario.email,
         role: usuario.rol as UserRole,
       };
@@ -199,7 +199,7 @@ export class UsuariosController {
       } else {
         // B. Usuarios Estándar: Usan JWT
         const token = jwt.sign(
-          { id: usuario.id, email: usuario.email, role: usuario.rol }, // CORREGIDO: Usar 'role' en el payload
+          { id: usuario.idUsuario, email: usuario.email, role: usuario.rol }, // CORREGIDO: Usar 'role' en el payload
           JWT_SECRET,
           { expiresIn: "24h" }
         );

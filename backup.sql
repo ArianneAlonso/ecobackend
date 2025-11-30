@@ -33,10 +33,11 @@ ALTER TYPE public.rol_enum OWNER TO admin;
 -- 2. TABLAS Y SECUENCIAS
 -- ----------------------------------------------------
 
--- Tabla: materiales
+-- Tabla: materiales (CORREGIDA: incluye puntos_por_kg)
 CREATE TABLE public.materiales (
     id_material integer NOT NULL,
-    nombre character varying(100) NOT NULL
+    nombre character varying(100) NOT NULL,
+    puntos_por_kg numeric(5,2) DEFAULT 0 NOT NULL -- COLUMNA DE PUNTOS AGREGADA
 );
 ALTER TABLE public.materiales OWNER TO admin;
 
@@ -50,15 +51,16 @@ ALTER TABLE ONLY public.materiales ADD CONSTRAINT materiales_nombre_key UNIQUE (
 
 ---
 
--- Tabla: usuarios
+-- Tabla: usuarios (CORREGIDA: incluye puntos_acumulados y sintaxis limpia)
 CREATE TABLE public.usuarios (
     id_usuario integer NOT NULL,
-    nombre text NOT NULL,
-    email text NOT NULL,
-    "contraseña" text NOT NULL,
+    nombre character varying(50) NOT NULL,
+    email character varying(80) NOT NULL,
+    "contraseña" character varying(100) NOT NULL,
     rol public.rol_enum NOT NULL,
+    puntos_acumulados integer DEFAULT 0 NOT NULL, -- COLUMNA DE SALDO AGREGADA
     fecha_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP
-);
+); -- ¡Sintaxis correcta, sin coma al final!
 ALTER TABLE public.usuarios OWNER TO admin;
 
 CREATE SEQUENCE public.usuarios_id_usuario_seq
@@ -95,7 +97,7 @@ ALTER TABLE ONLY public.contenedores ADD CONSTRAINT contenedores_pkey PRIMARY KE
 -- Tabla: eventos_ambientales
 CREATE TABLE public.eventos_ambientales (
     id_evento integer NOT NULL,
-    nombre text NOT NULL,
+    nombre character varying(50) NOT NULL,
     descripcion text,
     fecha timestamp without time zone NOT NULL,
     ubicacion text,
@@ -132,7 +134,7 @@ ALTER TABLE ONLY public.premios ADD CONSTRAINT premios_pkey PRIMARY KEY (id_prem
 
 ---
 
--- Tabla: entregas_materiales (COLUMNAS CONSOLIDADAS)
+-- Tabla: entregas_materiales
 CREATE TABLE public.entregas_materiales (
     id_entrega integer NOT NULL,
     id_usuario integer NOT NULL,
@@ -141,8 +143,8 @@ CREATE TABLE public.entregas_materiales (
     peso_kg numeric(5,2) NOT NULL,
     puntos_ganados integer NOT NULL,
     fecha_entrega timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    latitud NUMERIC(9,6) NULL,    -- CONSOLIDADA
-    longitud NUMERIC(9,6) NULL   -- CONSOLIDADA
+    latitud NUMERIC(9,6) NULL, 
+    longitud NUMERIC(9,6) NULL 
 );
 ALTER TABLE public.entregas_materiales OWNER TO admin;
 CREATE SEQUENCE public.entregas_materiales_id_entrega_seq
@@ -211,3 +213,17 @@ ALTER TABLE ONLY public.entregas_materiales
     ADD CONSTRAINT entregas_materiales_id_contenedor_fkey FOREIGN KEY (id_contenedor) REFERENCES public.contenedores(id_contenedor);
 ALTER TABLE ONLY public.entregas_materiales
     ADD CONSTRAINT entregas_materiales_id_material_fkey FOREIGN KEY (id_material) REFERENCES public.materiales(id_material);
+    
+-- ----------------------------------------------------
+-- 4. POBLACIÓN INICIAL DE DATOS
+-- ----------------------------------------------------
+
+INSERT INTO public.materiales (nombre, puntos_por_kg) VALUES
+('Plástico', 5.00), -- 5 puntos por kg
+('Papel', 3.50),    -- 3.5 puntos por kg
+('Vidrio', 2.00),   -- 2 puntos por kg
+('Aluminio', 10.00); -- 10 puntos por kg
+
+-- Ejemplo de inserción de contenedor (asumiendo id_contenedor=1)
+INSERT INTO public.contenedores (nombre_identificador, direccion, latitud, longitud, materiales_aceptados) VALUES
+('Punto Azul Central', 'Calle Falsa 123', -34.6037, -58.3816, 'Plástico, Papel, Vidrio');

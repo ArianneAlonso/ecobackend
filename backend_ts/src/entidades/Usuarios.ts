@@ -14,17 +14,20 @@ export enum UserRole {
 @Unique(['email'])
 export class Usuario {
  @PrimaryGeneratedColumn({ type: 'int', name: 'id_usuario' })
-  id!: number; 
+  idUsuario!: number; 
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 50 })
   nombre!: string;
 
-  @Column({ type: 'varchar', length: 255 }) 
+  @Column({ type: 'varchar', length: 50 }) 
   email!: string;
 
   // Usamos 'select: false' por seguridad: evita que se devuelva en consultas automáticas
-  @Column({ name: 'contraseña', type: 'text', select: false })
+  @Column({ name: 'contraseña', type: 'varchar',length: 100, select: false })
   password!: string;
+
+  @Column({ name: 'puntos_acumulados', type: 'integer', default: 0 })
+  puntosAcumulados!: number;
 
   @Column({ 
     type: 'enum', 
