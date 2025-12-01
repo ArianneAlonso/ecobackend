@@ -15,4 +15,8 @@ router.get('/', contenedorController.getContenedores.bind(contenedorController))
 // Ruta para obtener un contenedor por su ID (GET /contenedores/:id)
 router.get('/:id', contenedorController.getContenedorById.bind(contenedorController));
 
+router.put('/:id', contenedorController.updateContenedor.bind(contenedorController));
+
+router.delete('/:id', contenedorController.deleteContenedor.bind(contenedorController));
+
 export default router;
