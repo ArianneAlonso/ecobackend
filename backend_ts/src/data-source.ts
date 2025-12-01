@@ -8,7 +8,7 @@ import { Contenedor } from './entidades/Contenedor';
 import { EntregaMaterial } from './entidades/EntregaMaterial';
 import { PuntoEcologico } from './entidades/PuntoEcologico';
 import { Material } from './entidades/Material';
-import { EventoAmbiental } from './entidades/EventosAmbientales';
+import { EventoAmbiental } from './entidades/EventoAmbiental';
 import { Premio } from './entidades/Premios';
 
 

@@ -10,6 +10,12 @@ import { Usuario } from "./Usuarios";
 import { Contenedor } from "./Contenedor";
 import { Material } from "./Material";
 
+export enum EstadoPuntos {
+  PENDIENTE = 'pendiente',
+  CONFIRMADO = 'confirmado',
+  RECHAZADO = 'rechazado',
+}
+
 @Entity("entregas_materiales")
 export class EntregaMaterial {
   @PrimaryGeneratedColumn({ type: "int", name: "id_entrega" })
@@ -42,12 +48,20 @@ export class EntregaMaterial {
   @Column({ type: "int", name: "puntos_ganados" })
   puntosGanados!: number;
 
+  @Column({
+    type: 'enum',
+    enum: EstadoPuntos,
+    default: EstadoPuntos.PENDIENTE,
+    name: 'estado_puntos'
+})
+estadoPuntos!: EstadoPuntos;
+
   @CreateDateColumn({ name: "fecha_entrega" })
   fechaEntrega!: Date;
 
   @Column({ type: "numeric", precision: 9, scale: 6, nullable: true })
-  latitud?: number; // <-- **CORRECCIÓN: Se añadió '?'**
+  latitud?: number;
 
   @Column({ type: "numeric", precision: 9, scale: 6, nullable: true })
-  longitud?: number; // <-- **CORRECCIÓN: Se añadió '?'**
+  longitud?: number;
 }

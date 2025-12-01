@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { AppDataSource } from '../data-source';
-import { EventoAmbiental } from '../entidades/EventosAmbientales'; 
+import { EventoAmbiental } from '../entidades/EventoAmbiental'; 
 import { MoreThanOrEqual } from 'typeorm';
 import type { DeepPartial } from "typeorm";
 

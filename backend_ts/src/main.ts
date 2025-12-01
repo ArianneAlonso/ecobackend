@@ -61,8 +61,8 @@ AppDataSource.initialize()
     app.use("/usuarios", usuarioRoutes);
     app.use("/entregas", entregasRoutes);
     app.use("/dashboard", DashboardRoutes);
-    app.use("/profile", profileRoutes);
-    app.use('/events', eventsRoutes);
+    app.use("/perfil", profileRoutes);
+    app.use('/eventos', eventsRoutes);
     // 6. Iniciar servidor con tamaño de encabezado aumentado
     // AUMENTADO A 64KB (65536 bytes) para resolver el 400 Bad Request causado por cookies grandes.
     const server = http.createServer({ maxHeaderSize: 65536 }, app);

@@ -29,20 +29,26 @@ CREATE TYPE public.rol_enum AS ENUM (
 );
 ALTER TYPE public.rol_enum OWNER TO admin;
 
+-- NUEVO ENUM: Estado para la confirmación diferida de puntos
+CREATE TYPE public.estado_puntos_enum AS ENUM (
+    'pendiente',
+    'confirmado',
+    'rechazado'
+);
+ALTER TYPE public.estado_puntos_enum OWNER TO admin;
+
 -- ----------------------------------------------------
 -- 2. TABLAS Y SECUENCIAS
 -- ----------------------------------------------------
 
--- Tabla: materiales (CORREGIDA: incluye puntos_por_kg)
+-- Tabla: materiales
 CREATE TABLE public.materiales (
     id_material integer NOT NULL,
     nombre character varying(100) NOT NULL,
-    puntos_por_kg numeric(5,2) DEFAULT 0 NOT NULL -- COLUMNA DE PUNTOS AGREGADA
+    puntos_por_kg numeric(5,2) DEFAULT 0 NOT NULL
 );
 ALTER TABLE public.materiales OWNER TO admin;
-
-CREATE SEQUENCE public.materiales_id_material_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.materiales_id_material_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.materiales_id_material_seq OWNER TO admin;
 ALTER SEQUENCE public.materiales_id_material_seq OWNED BY public.materiales.id_material;
 ALTER TABLE ONLY public.materiales ALTER COLUMN id_material SET DEFAULT nextval('public.materiales_id_material_seq'::regclass);
@@ -51,20 +57,18 @@ ALTER TABLE ONLY public.materiales ADD CONSTRAINT materiales_nombre_key UNIQUE (
 
 ---
 
--- Tabla: usuarios (CORREGIDA: incluye puntos_acumulados y sintaxis limpia)
+-- Tabla: usuarios
 CREATE TABLE public.usuarios (
     id_usuario integer NOT NULL,
     nombre character varying(50) NOT NULL,
     email character varying(80) NOT NULL,
     "contraseña" character varying(100) NOT NULL,
     rol public.rol_enum NOT NULL,
-    puntos_acumulados integer DEFAULT 0 NOT NULL, -- COLUMNA DE SALDO AGREGADA
+    puntos_acumulados integer DEFAULT 0 NOT NULL,
     fecha_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP
-); -- ¡Sintaxis correcta, sin coma al final!
+); 
 ALTER TABLE public.usuarios OWNER TO admin;
-
-CREATE SEQUENCE public.usuarios_id_usuario_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.usuarios_id_usuario_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.usuarios_id_usuario_seq OWNER TO admin;
 ALTER SEQUENCE public.usuarios_id_usuario_seq OWNED BY public.usuarios.id_usuario;
 ALTER TABLE ONLY public.usuarios ALTER COLUMN id_usuario SET DEFAULT nextval('public.usuarios_id_usuario_seq'::regclass);
@@ -84,9 +88,7 @@ CREATE TABLE public.contenedores (
     dias_horarios_recoleccion text
 );
 ALTER TABLE public.contenedores OWNER TO admin;
-
-CREATE SEQUENCE public.contenedores_id_contenedor_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.contenedores_id_contenedor_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNER TO admin;
 ALTER SEQUENCE public.contenedores_id_contenedor_seq OWNED BY public.contenedores.id_contenedor;
 ALTER TABLE ONLY public.contenedores ALTER COLUMN id_contenedor SET DEFAULT nextval('public.contenedores_id_contenedor_seq'::regclass);
@@ -106,9 +108,7 @@ CREATE TABLE public.eventos_ambientales (
     longitud NUMERIC(9,6)
 );
 ALTER TABLE public.eventos_ambientales OWNER TO admin;
-
-CREATE SEQUENCE public.eventos_ambientales_id_evento_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.eventos_ambientales_id_evento_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.eventos_ambientales_id_evento_seq OWNER TO admin;
 ALTER SEQUENCE public.eventos_ambientales_id_evento_seq OWNED BY public.eventos_ambientales.id_evento;
 ALTER TABLE ONLY public.eventos_ambientales ALTER COLUMN id_evento SET DEFAULT nextval('public.eventos_ambientales_id_evento_seq'::regclass);
@@ -125,8 +125,7 @@ CREATE TABLE public.premios (
     stock integer DEFAULT 0
 );
 ALTER TABLE public.premios OWNER TO admin;
-CREATE SEQUENCE public.premios_id_premio_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.premios_id_premio_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.premios_id_premio_seq OWNER TO admin;
 ALTER SEQUENCE public.premios_id_premio_seq OWNED BY public.premios.id_premio;
 ALTER TABLE ONLY public.premios ALTER COLUMN id_premio SET DEFAULT nextval('public.premios_id_premio_seq'::regclass);
@@ -134,7 +133,7 @@ ALTER TABLE ONLY public.premios ADD CONSTRAINT premios_pkey PRIMARY KEY (id_prem
 
 ---
 
--- Tabla: entregas_materiales
+-- Tabla: entregas_materiales (CORREGIDA: AÑADIDA COLUMNA estado_puntos)
 CREATE TABLE public.entregas_materiales (
     id_entrega integer NOT NULL,
     id_usuario integer NOT NULL,
@@ -142,16 +141,17 @@ CREATE TABLE public.entregas_materiales (
     id_material integer NOT NULL, 
     peso_kg numeric(5,2) NOT NULL,
     puntos_ganados integer NOT NULL,
+    estado_puntos public.estado_puntos_enum DEFAULT 'pendiente' NOT NULL, 
     fecha_entrega timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     latitud NUMERIC(9,6) NULL, 
     longitud NUMERIC(9,6) NULL 
 );
 ALTER TABLE public.entregas_materiales OWNER TO admin;
-CREATE SEQUENCE public.entregas_materiales_id_entrega_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.entregas_materiales_id_entrega_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.entregas_materiales_id_entrega_seq OWNED BY public.entregas_materiales.id_entrega;
 ALTER TABLE ONLY public.entregas_materiales ALTER COLUMN id_entrega SET DEFAULT nextval('public.entregas_materiales_id_entrega_seq'::regclass);
 ALTER TABLE ONLY public.entregas_materiales ADD CONSTRAINT entregas_materiales_pkey PRIMARY KEY (id_entrega);
+
 
 ---
 
@@ -165,8 +165,7 @@ CREATE TABLE public.canjes_premios (
     estado character varying(50) DEFAULT 'pendiente'
 );
 ALTER TABLE public.canjes_premios OWNER TO admin;
-CREATE SEQUENCE public.canjes_premios_id_canje_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.canjes_premios_id_canje_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.canjes_premios_id_canje_seq OWNED BY public.canjes_premios.id_canje;
 ALTER TABLE ONLY public.canjes_premios ALTER COLUMN id_canje SET DEFAULT nextval('public.canjes_premios_id_canje_seq'::regclass);
 ALTER TABLE ONLY public.canjes_premios ADD CONSTRAINT canjes_premios_pkey PRIMARY KEY (id_canje);
@@ -184,9 +183,7 @@ CREATE TABLE public.puntos_ecologicos (
 );
 ALTER TABLE public.puntos_ecologicos OWNER TO admin;
 COMMENT ON COLUMN public.puntos_ecologicos.id_referencia IS 'ID de la tabla relacionada (ej. canje, evento, entrega)';
-
-CREATE SEQUENCE public.puntos_ecologicos_id_transaccion_seq
-    AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
+CREATE SEQUENCE public.puntos_ecologicos_id_transaccion_seq AS integer START WITH 1 INCREMENT BY 1 CACHE 1;
 ALTER SEQUENCE public.puntos_ecologicos_id_transaccion_seq OWNER TO admin;
 ALTER SEQUENCE public.puntos_ecologicos_id_transaccion_seq OWNED BY public.puntos_ecologicos.id_transaccion;
 ALTER TABLE ONLY public.puntos_ecologicos ALTER COLUMN id_transaccion SET DEFAULT nextval('public.puntos_ecologicos_id_transaccion_seq'::regclass);

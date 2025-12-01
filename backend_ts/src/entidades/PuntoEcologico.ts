@@ -1,6 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { Usuario } from './Usuarios'; // Asume esta ruta
 
+export enum EstadoPuntos {
+    PENDIENTE = 'pendiente',
+    CONFIRMADO = 'confirmado',
+    RECHAZADO = 'rechazado',
+}
+
 export enum TipoTransaccion { 
     ENTREGA = 'entrega',
     EVENTO = 'evento',
