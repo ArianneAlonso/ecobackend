@@ -46,7 +46,7 @@ AppDataSource.initialize()
         resave: false,
         saveUninitialized: false,
         cookie: {
-          maxAge: 1000 * 60 * 60 * 24, // 24 horas
+          maxAge: 1000 * 60 * 60,
           httpOnly: true,
           secure: isProduction,
           sameSite: isProduction ? "none" : "lax",
@@ -63,8 +63,7 @@ AppDataSource.initialize()
     app.use("/dashboard", DashboardRoutes);
     app.use("/perfil", profileRoutes);
     app.use('/eventos', eventsRoutes);
-    // 6. Iniciar servidor con tamaño de encabezado aumentado
-    // AUMENTADO A 64KB (65536 bytes) para resolver el 400 Bad Request causado por cookies grandes.
+
     const server = http.createServer({ maxHeaderSize: 65536 }, app);
     server.listen(3000, () =>
       console.log(

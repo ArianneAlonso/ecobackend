@@ -218,8 +218,9 @@ ALTER TABLE ONLY public.entregas_materiales
 INSERT INTO public.materiales (nombre, puntos_por_kg) VALUES
 ('Plástico', 5.00), -- 5 puntos por kg
 ('Papel', 3.50),    -- 3.5 puntos por kg
+('Cartón', 4.00),
 ('Vidrio', 2.00),   -- 2 puntos por kg
-('Aluminio', 10.00); -- 10 puntos por kg
+('Metal', 10.00); -- 10 puntos por kg
 
 -- Ejemplo de inserción de contenedor (asumiendo id_contenedor=1)
 INSERT INTO public.contenedores (nombre_identificador, direccion, latitud, longitud, materiales_aceptados) VALUES
