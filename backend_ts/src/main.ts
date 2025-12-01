@@ -6,6 +6,7 @@ import entregasRoutes from "./routes/entrega.routes.js";
 import DashboardRoutes from "./routes/dashboard.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import eventsRoutes from './routes/events.routes';
+import containerRoutes from './routes/container.routes';
 import cors from "cors";
 import morgan from "morgan";
 import session from "express-session";
@@ -63,6 +64,7 @@ AppDataSource.initialize()
     app.use("/dashboard", DashboardRoutes);
     app.use("/perfil", profileRoutes);
     app.use('/eventos', eventsRoutes);
+    app.use('/contenedores', containerRoutes);
 
     const server = http.createServer({ maxHeaderSize: 65536 }, app);
     server.listen(3000, () =>
